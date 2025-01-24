@@ -10,28 +10,114 @@
 #include "mlx.h"
 #include <math.h>
 
+int	countw(char const *s, char c)
+{
+	int	i;
+	int	wnumber;
+
+	i = 0;
+	wnumber = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == c)
+		{
+			i++;
+		}
+		else
+		{
+			wnumber++;
+			while (s[i] != c && s[i])
+			{
+				i++;
+			}
+		}
+	}
+	return (wnumber);
+}
+
+char	*creatw(char *daz, char const *s, int first_i, int last_i)
+{
+	int	i;
+
+	i = 0;
+	while (i < last_i)
+	{
+		daz[i] = s[first_i + i];
+		i++;
+	}
+	daz[i] = '\0';
+	return (daz);
+}
+
+char	*create_single_word(char const *s, int *index, char c)
+{
+	int		w_len;
+	int		first;
+	char	*word;
+
+	w_len = 0;
+	first = *index;
+	while (s[*index] != c && s[*index])
+	{
+		w_len++;
+		(*index)++;
+	}
+	word = (char *)malloc(sizeof(char) * (w_len + 1));
+	if (!word)
+		return (0);
+	creatw(word, s, first, w_len);
+	return (word);
+}
+
+char	**create_word(char **daza, char const *s, char c, int k_len)
+{
+	int	i;
+	int	k;
+
+	i = 0;
+	k = 0;
+	while (s[i] && k < k_len)
+	{
+		if (s[i] != c)
+		{
+			daza[k] = create_single_word(s, &i, c);
+			if (!daza[k])
+			{
+				while (--k > -1)
+					free(daza[k]);
+				free(daza);
+				return (0);
+			}
+			k++;
+		}
+		else
+			i++;
+	}
+	daza[k] = NULL;
+	return (daza);
+}
+
+char	**ft_split(char const *s, char c)
+{
+	int		k_len;
+	char	**str;
+
+	if (!s)
+		return (0);
+	k_len = countw(s, c);
+	str = (char **)malloc(sizeof(char *) * (k_len + 1));
+	if (!str)
+		return (0);
+	str = create_word(str, s, c, k_len);
+	return (str);
+}
+
 int count_values(char **values) 
 {
     int count = 0;
     while (values[count] != NULL)
         count++;
     return count;
-}
-
-char **ft_split(const char *str, char delimiter) 
-{
-    char **result = malloc(256 * sizeof(char *)); // Maksimum 256 kelime için
-    char *token, *str_copy = strdup(str);
-    int i = 0;
-
-    token = strtok(str_copy, &delimiter);
-    while (token != NULL) {
-        result[i++] = strdup(token);
-        token = strtok(NULL, &delimiter);
-    }
-    result[i] = NULL;
-    free(str_copy);
-    return result;
 }
 
 int **read_fdf_file(char *filename, int *rows, int *cols) 
@@ -44,6 +130,7 @@ int **read_fdf_file(char *filename, int *rows, int *cols)
     }
 
     char *line = NULL;
+    char **values;
     size_t len = 0;
     ssize_t read;
     int **map = NULL;
@@ -52,10 +139,10 @@ int **read_fdf_file(char *filename, int *rows, int *cols)
     int row = 0;
     while ((read = getline(&line, &len, fdopen(fd, "r"))) != -1) 
     {
-        char **values = ft_split(line, ' ');
+        values = ft_split(line, ' ');
         if (!map) 
         {
-            *cols = count_values(values); // İlk satırdaki kolon sayısını kaydet
+            *cols = count_values(values); // İlk satırdaki kolon sayısı
             map = malloc(sizeof(int *) * MAX_ROWS);
         }
         map[row] = malloc(sizeof(int) * (*cols));
@@ -85,16 +172,25 @@ void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win)
 {
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
-    int sx = (x0 < x1) ? 1 : -1;
-    int sy = (y0 < y1) ? 1 : -1;
+    int sx;
+    int sy;
     int err = dx - dy;
+    int e2;
 
+    if (x0 < x1)
+        sx = 1;
+    if (x0 > x1)
+        sx = -1;
+    if (y0 < y1)
+        sy = 1;
+    if (y0 > y1)
+        sy = -1;
     while (1) 
     {
-        mlx_pixel_put(mlx, win, x0, y0, 0xFFFFFF); // Beyaz piksel çiz
+        mlx_pixel_put(mlx, win, x0, y0, 0xADD8E6); // Mavi piksel çiz
         if (x0 == x1 && y0 == y1)
             break;
-        int e2 = 2 * err;
+        e2 = 2 * err;
         if (e2 > -dy) 
         {
             err -= dy;
@@ -121,21 +217,21 @@ void draw_map(int **map, int rows, int cols, void *mlx, void *win)
     {
         while (x < cols) 
         {
-            int x_proj = x * TILE_SIZE;
-            int y_proj = y * TILE_SIZE;
+            x_proj = x * TILE_SIZE;
+            y_proj = y * TILE_SIZE;
             iso_projection(&x_proj, &y_proj, map[y][x]);
 
             if (x < cols - 1) 
             {
-                int x_next = (x + 1) * TILE_SIZE;
-                int y_next = y * TILE_SIZE;
+                x_next = (x + 1) * TILE_SIZE;
+                y_next = y * TILE_SIZE;
                 iso_projection(&x_next, &y_next, map[y][x + 1]);
                 draw_line(x_proj, y_proj, x_next, y_next, mlx, win);
             }
             if (y < rows - 1) 
             {
-                int x_next = x * TILE_SIZE;
-                int y_next = (y + 1) * TILE_SIZE;
+                x_next = x * TILE_SIZE;
+                y_next = (y + 1) * TILE_SIZE;
                 iso_projection(&x_next, &y_next, map[y + 1][x]);
                 draw_line(x_proj, y_proj, x_next, y_next, mlx, win);
             }
@@ -145,19 +241,25 @@ void draw_map(int **map, int rows, int cols, void *mlx, void *win)
     }
 }
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
+    int rows;
+    int cols;
+    int **map;
+    void *mlx;
+    void *win;
+
     if (argc != 2) 
     {
         printf("Geçerli dosyayi girin!\n");
         return (1);
     }
 
-    void *mlx = mlx_init();
-    void *win = mlx_new_window(mlx, 800, 600, "FDF");
+    mlx = mlx_init();
+    win = mlx_new_window(mlx, 1400, 800, "FDF");
 
-    int rows, cols;
-    int **map = read_fdf_file(argv[1], &rows, &cols);
+    
+    map = read_fdf_file(argv[1], &rows, &cols);
 
     if (!map) 
     {

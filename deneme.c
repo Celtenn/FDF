@@ -5,7 +5,7 @@
 
 #define OFFSET_X 500
 #define OFFSET_Y 100
-#define SCALE_FACTOR 0.5
+#define SCALE_FACTOR 0.8
 #define BUFFER_SIZE 3
 #define MAX_ROWS 100000   // Maksimum satır sayısı
 #define TILE_SIZE 10    // Her bir hücrenin piksel boyutu
@@ -308,11 +308,13 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
     }
 
     char *line = NULL;
+    char **temp;
     char **values;
     unsigned int **map = NULL;
     int col = 0;
     int row = 0;
-    int temp = 0;
+    unsigned int tmp = 0;
+    int j = 0;
 
     while ((line = get_next_line(fd))) 
     {
@@ -326,24 +328,17 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
         col = 0;
         while (col < *cols) 
         {
-            if (ft_atoi(values[col]) == -10)
-            {
-                unsigned int hex_value = strtol(values[col], NULL, 16);
-                map[row][col] = hex_value;
+
+                map[row][col] = atoi(values[col]);
+                free(values[col]);
                 col++;
-            }
-            else
-            {
-                map[row][col] = ft_atoi(values[col]);
-                col++;
-            }
         }
         row++;
         free(values);
     }
     *rows = row;
     close(fd);
-    return map;
+    return (map);
 }
 
 void iso_projection(int *x, int *y, int z) 
@@ -399,9 +394,6 @@ void draw_map(unsigned int **map, int rows, int cols, void *mlx, void *win)
     int y_proj = 0;
     int x_next = 0;
     int y_next = 0;
-    int max_z = -1; // En yüksek z değeri
-    // Tepe noktasının belirlenmesi
-    int peak_x = 0, peak_y = 0;
 
     while (y < rows) 
     {
@@ -412,13 +404,6 @@ void draw_map(unsigned int **map, int rows, int cols, void *mlx, void *win)
             x_proj = x * TILE_SIZE;
             y_proj = y * TILE_SIZE;
             iso_projection(&x_proj, &y_proj, map[y][x]);
-
-            // Eğer bu nokta en yüksek z noktasına sahipse, bunu kaydet
-            if (map[y][x] > max_z) {
-                max_z = map[y][x];
-                peak_x = x_proj;
-                peak_y = y_proj;
-            }
 
             // Diğer çizimleri yap (yan ve alt çizgileri)
             if (x < cols - 1) 
@@ -437,8 +422,10 @@ void draw_map(unsigned int **map, int rows, int cols, void *mlx, void *win)
             }
             x++;
         }
+        free(map[y]);
         y++;
     }
+    free(map);
 }
 
 int main(int argc, char **argv)

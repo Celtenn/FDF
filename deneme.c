@@ -4,11 +4,11 @@
 #include <stdio.h>
 
 #define OFFSET_X 500
-#define OFFSET_Y 100
+#define OFFSET_Y 200
 #define SCALE_FACTOR 0.8
 #define BUFFER_SIZE 3
-#define MAX_ROWS 100000   // Maksimum satır sayısı
-#define TILE_SIZE 10    // Her bir hücrenin piksel boyutu
+#define MAX_ROWS 100000
+#define TILE_SIZE 10
  #include <string.h>
 #include <stdlib.h>
 #include "mlx.h"
@@ -314,14 +314,14 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
     int col = 0;
     int row = 0;
     unsigned int tmp = 0;
-    int j = 0;
+	int j = 0;
 
     while ((line = get_next_line(fd))) 
     {
         values = ft_split(line, ' ');
         if (!map) 
         {
-            *cols = count_values(values); // İlk satırdaki kolon sayısı
+            *cols = count_values(values);
             map = malloc(sizeof(int *) * MAX_ROWS);
         }
         map[row] = malloc(sizeof(int) * (*cols));
@@ -330,17 +330,17 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
         {
             if (ft_atoi(values[col]) == -10)
             {
+				j = 0;
                 temp = ft_split(values[col], ',');
-                j = 0;
-                while (temp[j])
-                {
-                    tmp = strtol(temp[j], NULL, 16);
-                    map[row][col] = tmp;
-                    j++;
-                    col++;
-                    free(temp[j]);
-                }
-                free(temp);
+                tmp = atoi(temp[j]);
+                map[row][col] = tmp;
+                col++;
+				while (temp[j])
+				{
+                	free(temp[j]);
+					j++;
+				}
+				free(temp);
             }
             else
             {
@@ -363,7 +363,7 @@ void iso_projection(int *x, int *y, int z)
     int prev_y = *y;
 
     *x = (prev_x - prev_y) * cos(0.523599) * SCALE_FACTOR + OFFSET_X; // 30 derece
-    *y = (prev_x + prev_y) * sin(0.523599) * SCALE_FACTOR + OFFSET_Y - z;
+    *y = (prev_x + prev_y) * sin(0.523599) * SCALE_FACTOR + OFFSET_Y - (z * 15);
 }
 
 void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win) 
@@ -410,29 +410,17 @@ void draw_map(unsigned int **map, int rows, int cols, void *mlx, void *win)
     int y_proj = 0;
     int x_next = 0;
     int y_next = 0;
-    int max_z = -1; // En yüksek z değeri
-    // Tepe noktasının belirlenmesi
-    int peak_x = 0, peak_y = 0;
 
     while (y < rows) 
     {
         x = 0;
         while (x < cols) 
         {
-            // Her nokta için projeksiyon hesapla
             x_proj = x * TILE_SIZE;
             y_proj = y * TILE_SIZE;
             iso_projection(&x_proj, &y_proj, map[y][x]);
 
-            // Eğer bu nokta en yüksek z noktasına sahipse, bunu kaydet
-            if (map[y][x] > max_z) {
-                max_z = map[y][x];
-                peak_x = x_proj;
-                peak_y = y_proj;
-            }
-
-            // Diğer çizimleri yap (yan ve alt çizgileri)
-            if (x < cols - 1) 
+            if (x < cols - 1)
             {
                 x_next = (x + 1) * TILE_SIZE;
                 y_next = y * TILE_SIZE;
@@ -476,7 +464,7 @@ int main(int argc, char **argv)
 
     if (!map) 
     {
-        printf("Error reading map file\n");
+        printf("Hatali harita!\n");
         return (1);
     }
 

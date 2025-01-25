@@ -10,9 +10,9 @@
 #define OFFSET_X 500
 #define OFFSET_Y 200
 #define SCALE_FACTOR 0.8
-#define BUFFER_SIZE 3
-#define MAX_ROWS 100000
-#define TILE_SIZE 10
+#define BUFFER_SIZE 100
+#define MAX_ROWS 501
+#define TILE_SIZE 15
 
 int	ft_atoi(char *str)
 {
@@ -362,8 +362,8 @@ void iso_projection(int *x, int *y, int z)
     int prev_x = *x;
     int prev_y = *y;
 
-    *x = (prev_x - prev_y) * cos(0.523599) * SCALE_FACTOR + OFFSET_X; // 30 derece
-    *y = (prev_x + prev_y) * sin(0.523599) * SCALE_FACTOR + OFFSET_Y - (z * 15);
+    *x = (prev_x - prev_y) * cos(2.61799) * SCALE_FACTOR + OFFSET_X; // 30 derece
+    *y = (prev_x + prev_y) * sin(2.61799) * SCALE_FACTOR + OFFSET_Y - (z * 15);
 }
 
 void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win) 

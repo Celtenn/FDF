@@ -7,12 +7,21 @@
 #include "mlx.h"
 #include <math.h>
 
-#define OFFSET_X 500
+#define OFFSET_X 400
 #define OFFSET_Y 200
-#define SCALE_FACTOR 0.8
+#define SCALE_FACTOR 0.5
 #define BUFFER_SIZE 100
 #define MAX_ROWS 501
 #define TILE_SIZE 15
+
+typedef struct s_data
+{
+    void *mlx;
+    void *win;
+    unsigned int **map;
+    int rows;
+    int cols;
+} t_data;
 
 int	ft_atoi(char *str)
 {
@@ -275,7 +284,7 @@ char	**create_word(char **daza, char const *s, char c, int k_len)
 	return (daza);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char *s, char c)
 {
 	int		k_len;
 	char	**str;
@@ -287,6 +296,7 @@ char	**ft_split(char const *s, char c)
 	if (!str)
 		return (0);
 	str = create_word(str, s, c, k_len);
+	free(s);
 	return (str);
 }
 
@@ -308,8 +318,8 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
     }
 
     char *line = NULL;
-    char **temp;
-    char **values;
+    char **temp = NULL;
+    char **values = NULL;
     unsigned int **map = NULL;
     int col = 0;
     int row = 0;
@@ -318,6 +328,7 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
 
     while ((line = get_next_line(fd))) 
     {
+		values = NULL;
         values = ft_split(line, ' ');
         if (!map) 
         {
@@ -349,8 +360,8 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
                 col++;
             }
         }
+		free(values);
         row++;
-        free(values);
     }
     *rows = row;
     close(fd);
@@ -436,19 +447,86 @@ void draw_map(unsigned int **map, int rows, int cols, void *mlx, void *win)
             }
             x++;
         }
-        free(map[y]);
         y++;
     }
-    free(map);
 }
+
+int redraw(void *param)
+{
+    t_data *data = (t_data *)param;
+    mlx_clear_window(data->mlx, data->win);
+    draw_map(data->map, data->rows, data->cols, data->mlx, data->win);
+    return (0);
+}
+
+int close_window(void *param) 
+{
+	int i = 0;
+    t_data *data = (t_data *)param;
+
+    if (data->map != NULL) 
+	{
+        while (data->map[i]) 
+		{
+            free(data->map[i]);
+			i++;
+        }
+        free(data->map);
+    }
+    if (data->win != NULL) 
+	{
+        mlx_destroy_window(data->mlx, data->win);
+    }
+    if (data->mlx != NULL) 
+	{
+        mlx_destroy_display(data->mlx);
+        free(data->mlx);
+        data->mlx = NULL;
+    }
+    exit(0);
+}
+
+int key_hook_esc(int keycode, void *param)
+{
+    if (keycode == 65307) // ESC tuşu
+	{
+		int i = 0;
+		t_data *data = (t_data *)param;
+
+    	if (data->map != NULL) 
+		{
+        	while (data->map[i]) 
+			{
+            	free(data->map[i]);
+				i++;
+        	}
+        	free(data->map);
+    	}
+    	if (data->win != NULL) 
+		{
+        	mlx_destroy_window(data->mlx, data->win);
+    	}
+    	if (data->mlx != NULL) 
+		{
+        	mlx_destroy_display(data->mlx);
+        	free(data->mlx);
+    	}
+        printf("ESC tuşuna basildi. Program kapaniyor.\n");
+		exit(0);
+    }
+    return (0);
+}
+
+//Key Press Event (Tuş Basımı): KeyPress (event kodu: 2)
+//Key Release Event (Tuş Bırakma): KeyRelease (event kodu: 3)
+//Mouse Motion (Fare Hareketi): MotionNotify (event kodu: 6)
+//Mouse Click (Fare Tıklaması): ButtonPress (event kodu: 4)
+//Window Close (Pencere Kapatma): DestroyNotify (event kodu: 17)
 
 int main(int argc, char **argv)
 {
-    int rows;
-    int cols;
-    unsigned int **map;
-    void *mlx;
-    void *win;
+	int i = 0;
+	t_data data;
 
     if (argc != 2) 
     {
@@ -456,20 +534,22 @@ int main(int argc, char **argv)
         return (1);
     }
 
-    mlx = mlx_init();
-    win = mlx_new_window(mlx, 900, 600, "FDF");
+    data.mlx = mlx_init();
+    data.win = mlx_new_window(data.mlx, 900, 600, "FDF");
 
-    
-    map = read_fdf_file(argv[1], &rows, &cols);
+    data.map = read_fdf_file(argv[1], &data.rows, &data.cols);
 
-    if (!map) 
+    if (!data.map)
     {
         printf("Hatali harita!\n");
         return (1);
     }
 
-    draw_map(map, rows, cols, mlx, win);
+    draw_map(data.map, data.rows, data.cols, data.mlx, data.win);
+	mlx_hook(data.win, 2, 1L << 0, key_hook_esc, &data);
+    mlx_hook(data.win, 17, 0, close_window, &data);
+	mlx_expose_hook(data.win, redraw, &data);
 
-    mlx_loop(mlx);
+    mlx_loop(data.mlx);
     return (0);
 }

@@ -362,7 +362,7 @@ void iso_projection(int *x, int *y, int z)
     int prev_x = *x;
     int prev_y = *y;
 
-    *x = (prev_x - prev_y) * cos(2.61799) * SCALE_FACTOR + OFFSET_X; // 30 derece
+    *x = (prev_x - prev_y) * cos(2.61799) * SCALE_FACTOR + OFFSET_X; // 150 derece
     *y = (prev_x + prev_y) * sin(2.61799) * SCALE_FACTOR + OFFSET_Y - (z * 15);
 }
 

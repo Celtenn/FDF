@@ -2,6 +2,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "mlx.h"
+#include <math.h>
 
 #define OFFSET_X 500
 #define OFFSET_Y 200
@@ -9,10 +13,6 @@
 #define BUFFER_SIZE 3
 #define MAX_ROWS 100000
 #define TILE_SIZE 10
- #include <string.h>
-#include <stdlib.h>
-#include "mlx.h"
-#include <math.h>
 
 int	ft_atoi(char *str)
 {

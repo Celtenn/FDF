@@ -7,10 +7,10 @@
 #include "mlx.h"
 #include <math.h>
 
-#define OFFSET_X 400
-#define OFFSET_Y 200
-#define SCALE_FACTOR 0.5
-#define BUFFER_SIZE 100
+#define OFFSET_X 1200
+#define OFFSET_Y 1200
+#define SCALE_FACTOR 0.2
+#define BUFFER_SIZE 1000
 #define MAX_ROWS 501
 #define TILE_SIZE 15
 
@@ -18,9 +18,14 @@ typedef struct s_data
 {
     void *mlx;
     void *win;
+	void *image;
     unsigned int **map;
     int rows;
     int cols;
+	int len;
+	int bitt;
+	int endian;
+	char *narr;
 } t_data;
 
 int	ft_atoi(char *str)
@@ -368,24 +373,55 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
     return (map);
 }
 
-void iso_projection(int *x, int *y, int z) 
+void iso_projection(int *x, int *y, int z, t_data *data) 
 {
+	int offsetx = 1600 / 2 - ((data->cols * TILE_SIZE) * SCALE_FACTOR) / 2;
+	int offsety = 900 / 2 - ((data->rows * TILE_SIZE) * SCALE_FACTOR) / 2;
     int prev_x = *x;
     int prev_y = *y;
 
-    *x = (prev_x - prev_y) * cos(2.61799) * SCALE_FACTOR + OFFSET_X; // 150 derece
-    *y = (prev_x + prev_y) * sin(2.61799) * SCALE_FACTOR + OFFSET_Y - (z * 15);
+    *x = (prev_x - prev_y) * cos(0.6) * SCALE_FACTOR + offsetx; // 150 derece
+    *y = (prev_x + prev_y) * sin(0.6) * SCALE_FACTOR + offsety - (z * 2);
 }
 
-void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win) 
+// Noktanın ekran içinde olup olmadığını kontrol eden fonksiyon
+int is_inside(int x, int y) 
 {
+    return (x >= 0 && x < 1600 && y >= 0 && y < 900);
+}
+
+// Çizginin ekran içinde kalan kısmını hesaplayan fonksiyon
+int clip_line(int *x0, int *y0, int *x1, int *y1) 
+{
+    if (is_inside(*x0, *y0) && is_inside(*x1, *y1)) {
+        return (1); // Çizgi zaten tamamen ekranda, kırpmaya gerek yok
+    }
+
+    // Sınırları aşan koordinatları ekran içinde kalacak şekilde ayarla
+    if (*x0 < 0) *x0 = 0;
+    if (*x0 >= 1600) *x0 = 1600 - 1;
+    if (*y0 < 0) *y0 = 0;
+    if (*y0 >= 900) *y0 = 900 - 1;
+
+    if (*x1 < 0) *x1 = 0;
+    if (*x1 >= 1600) *x1 = 1600 - 1;
+    if (*y1 < 0) *y1 = 0;
+    if (*y1 >= 900) *y1 = 900 - 1;
+
+    return (1);
+}
+
+void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win, t_data *data) 
+{
+	 if (!clip_line(&x0, &y0, &x1, &y1))
+        return; // Eğer çizgi tamamen ekran dışındaysa, çizme
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
     int sx;
     int sy;
     int err = dx - dy;
     int e2;
-
+	//printf("Drawing line from (%d, %d) to (%d, %d)\n", x0, y0, x1, y1);
     if (x0 < x1)
         sx = 1;
     if (x0 > x1)
@@ -396,7 +432,11 @@ void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win)
         sy = -1;
     while (1) 
     {
-        mlx_pixel_put(mlx, win, x0, y0, 0xADD8E6); // Mavi piksel çiz
+        // Sadece geçerli pikselleri çiz
+        if (is_inside(x0, y0)) {
+            int pixel_index = (y0 * data->len) + (x0 * (data->bitt / 8));
+            *(unsigned int *)(data->narr + pixel_index) = 0xADD8E6;  // Mavi renk
+        }
         if (x0 == x1 && y0 == y1)
             break;
         e2 = 2 * err;
@@ -413,7 +453,7 @@ void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win)
     }
 }
 
-void draw_map(unsigned int **map, int rows, int cols, void *mlx, void *win) 
+void draw_map(unsigned int **map, t_data *data) 
 {
     int y = 0;
     int x = 0;
@@ -422,40 +462,41 @@ void draw_map(unsigned int **map, int rows, int cols, void *mlx, void *win)
     int x_next = 0;
     int y_next = 0;
 
-    while (y < rows) 
+    while (y < data->rows) 
     {
         x = 0;
-        while (x < cols) 
+        while (x < data->cols) 
         {
             x_proj = x * TILE_SIZE;
             y_proj = y * TILE_SIZE;
-            iso_projection(&x_proj, &y_proj, map[y][x]);
+            iso_projection(&x_proj, &y_proj, map[y][x], data);
 
-            if (x < cols - 1)
+            if (x < data->cols - 1)
             {
                 x_next = (x + 1) * TILE_SIZE;
                 y_next = y * TILE_SIZE;
-                iso_projection(&x_next, &y_next, map[y][x + 1]);
-                draw_line(x_proj, y_proj, x_next, y_next, mlx, win);
+                iso_projection(&x_next, &y_next, map[y][x + 1], data);
+                draw_line(x_proj, y_proj, x_next, y_next, data->mlx, data->win, data);
             }
-            if (y < rows - 1) 
+            if (y < data->rows - 1) 
             {
                 x_next = x * TILE_SIZE;
                 y_next = (y + 1) * TILE_SIZE;
-                iso_projection(&x_next, &y_next, map[y + 1][x]);
-                draw_line(x_proj, y_proj, x_next, y_next, mlx, win);
+                iso_projection(&x_next, &y_next, map[y + 1][x], data);
+                draw_line(x_proj, y_proj, x_next, y_next, data->mlx, data->win, data);
             }
             x++;
         }
         y++;
     }
+	mlx_put_image_to_window(data->mlx, data->win, data->image, 0, 0);
 }
 
 int redraw(void *param)
 {
     t_data *data = (t_data *)param;
     mlx_clear_window(data->mlx, data->win);
-    draw_map(data->map, data->rows, data->cols, data->mlx, data->win);
+    draw_map(data->map, data);
     return (0);
 }
 
@@ -473,6 +514,7 @@ int close_window(void *param)
         }
         free(data->map);
     }
+	mlx_destroy_image(data->mlx, data->image);
     if (data->win != NULL) 
 	{
         mlx_destroy_window(data->mlx, data->win);
@@ -502,6 +544,7 @@ int key_hook_esc(int keycode, void *param)
         	}
         	free(data->map);
     	}
+		mlx_destroy_image(data->mlx, data->image);
     	if (data->win != NULL) 
 		{
         	mlx_destroy_window(data->mlx, data->win);
@@ -533,9 +576,12 @@ int main(int argc, char **argv)
         printf("Geçerli dosyayi girin!\n");
         return (1);
     }
-
+	data.len = (1600 * 32) / 8;
+	data.bitt = 32;
     data.mlx = mlx_init();
-    data.win = mlx_new_window(data.mlx, 900, 600, "FDF");
+    data.win = mlx_new_window(data.mlx, 1600, 900, "FDF");
+	data.image = mlx_new_image(data.mlx, 1600, 900);
+	data.narr = mlx_get_data_addr(data.image, &data.bitt, &data.len, &data.endian);
 
     data.map = read_fdf_file(argv[1], &data.rows, &data.cols);
 
@@ -545,7 +591,8 @@ int main(int argc, char **argv)
         return (1);
     }
 
-    draw_map(data.map, data.rows, data.cols, data.mlx, data.win);
+    draw_map(data.map, &data);
+	mlx_clear_window(data.mlx, data.win);
 	mlx_hook(data.win, 2, 1L << 0, key_hook_esc, &data);
     mlx_hook(data.win, 17, 0, close_window, &data);
 	mlx_expose_hook(data.win, redraw, &data);

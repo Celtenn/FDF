@@ -1,5 +1,4 @@
-#include "get_next_line.h"
-#include <stdlib.h>
+#include "fdf.h"
 
 int	countw(char const *s, char c)
 {
@@ -88,7 +87,7 @@ char	**create_word(char **daza, char const *s, char c, int k_len)
 	return (daza);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char *s, char c)
 {
 	int		k_len;
 	char	**str;
@@ -100,5 +99,6 @@ char	**ft_split(char const *s, char c)
 	if (!str)
 		return (0);
 	str = create_word(str, s, c, k_len);
+	free(s);
 	return (str);
 }

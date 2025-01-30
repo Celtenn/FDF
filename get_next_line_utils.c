@@ -1,4 +1,23 @@
-#include <stdlib.h>
+#include "fdf.h"
+
+int	ft_atoi(char *str)
+{
+	unsigned int		i;
+	unsigned long int	number;
+
+	i = 0;
+	number = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+		{
+			return (-10);
+		}
+		number = (str[i] - '0') + (number * 10);
+		i++;
+	}
+	return (number);
+}
 
 int	ft_strlen(const char *str)
 {
@@ -53,4 +72,14 @@ char	*ft_strjoin(char *str, char *nbr)
 	arr[p] = '\0';
 	free(str);
 	return (arr);
+}
+
+int	count_values(char **values)
+{
+	int	count;
+
+	count = 0;
+	while (values[count] != NULL)
+		count++;
+	return (count);
 }

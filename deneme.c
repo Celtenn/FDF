@@ -1,319 +1,6 @@
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include "mlx.h"
-#include <math.h>
+#include "fdf.h"
 
-#define OFFSET_X 1200
-#define OFFSET_Y 1200
-#define SCALE_FACTOR 0.2
-#define BUFFER_SIZE 1000
-#define MAX_ROWS 501
-#define TILE_SIZE 15
-
-typedef struct s_data
-{
-    void *mlx;
-    void *win;
-	void *image;
-    unsigned int **map;
-    int rows;
-    int cols;
-	int len;
-	int bitt;
-	int endian;
-	char *narr;
-} t_data;
-
-int	ft_atoi(char *str)
-{
-	unsigned int		i;
-	int					sign;
-	unsigned long int	number;
-
-	i = 0;
-	number = 0;
-	while (str[i])
-	{
-        if (str[i] < '0' || str[i] > '9')
-        {
-            return (-10);
-        }
-		number = (str[i] - '0') + (number * 10);
-		i++;
-	}
-	return (number);
-}
-
-int	ft_strlen(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (0);
-	while (str[i])
-	{
-		i++;
-	}
-	return (i);
-}
-
-char	*ft_strchr(char *str, int c)
-{
-	if (!str)
-		return (0);
-	while (*str)
-	{
-		if (*str == c)
-			return (str);
-		str++;
-	}
-	return (0);
-}
-
-char	*ft_strjoin(char *str, char *nbr)
-{
-	size_t	p;
-	size_t	i;
-	char	*arr;
-
-	if (!str)
-	{
-		str = (char *)malloc(sizeof(char) * 1);
-		str[0] = '\0';
-	}
-	if (!str || !nbr)
-		return (NULL);
-	arr = malloc(ft_strlen(str) + ft_strlen(nbr) + 1);
-	if (!arr)
-		return (NULL);
-	i = 0;
-	p = 0;
-	while (str[p] != '\0')
-		arr[i++] = str[p++];
-	i = 0;
-	while (nbr[i] != '\0')
-		arr[p++] = nbr[i++];
-	arr[p] = '\0';
-	free(str);
-	return (arr);
-}
-
-char	*ft_line(char *str)
-{
-	char	*arr;
-	int		i;
-
-	i = 0;
-	if (!str[i])
-		return (0);
-	while (str[i] && str[i] != '\n')
-		i++;
-	arr = malloc(i + 2);
-	if (!arr)
-		return (0);
-	i = 0;
-	while (str[i] && str[i] != '\n')
-	{
-		arr[i] = str[i];
-		i++;
-	}
-	if (str[i] == '\n')
-	{
-		arr[i] = str[i];
-		i++;
-	}
-	arr[i] = '\0';
-	return (arr);
-}
-
-char	*ft_last(char *str)
-{
-	char	*arr;
-	int		i;
-	int		p;
-
-	i = 0;
-	p = 0;
-	while (str[p] && str[p] != '\n')
-	{
-		p++;
-	}
-	if (!str[p])
-	{
-		free(str);
-		return (0);
-	}
-	arr = malloc(ft_strlen(str) - p + 1);
-	if (!arr)
-		return (0);
-	p++;
-	while (str[p])
-		arr[i++] = str[p++];
-	arr[i] = '\0';
-	free(str);
-	return (arr);
-}
-
-char	*ft_read(char *str, int fd)
-{
-	int		read_len;
-	char	*buffer;
-
-	read_len = 1;
-	buffer = malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-		return (0);
-	while (!ft_strchr(str, '\n') && read_len != 0)
-	{
-		read_len = read(fd, buffer, BUFFER_SIZE);
-		if (read_len == -1)
-		{
-			free(buffer);
-			return (0);
-		}
-		buffer[read_len] = '\0';
-		str = ft_strjoin(str, buffer);
-	}
-	free(buffer);
-	return (str);
-}
-
-char	*get_next_line(int fd)
-{
-	static char	*str;
-	char		*arr;
-
-	if (fd < 0 || BUFFER_SIZE <= 0)
-	{
-		free(str);
-		str = NULL;
-		return (0);
-	}
-	str = ft_read(str, fd);
-	if (!str)
-		return (0);
-	arr = ft_line(str);
-	str = ft_last(str);
-	return (arr);
-}
-
-int	countw(char const *s, char c)
-{
-	int	i;
-	int	wnumber;
-
-	i = 0;
-	wnumber = 0;
-	while (s[i] != '\0')
-	{
-		if (s[i] == c)
-		{
-			i++;
-		}
-		else
-		{
-			wnumber++;
-			while (s[i] != c && s[i])
-			{
-				i++;
-			}
-		}
-	}
-	return (wnumber);
-}
-
-char	*creatw(char *daz, char const *s, int first_i, int last_i)
-{
-	int	i;
-
-	i = 0;
-	while (i < last_i)
-	{
-		daz[i] = s[first_i + i];
-		i++;
-	}
-	daz[i] = '\0';
-	return (daz);
-}
-
-char	*create_single_word(char const *s, int *index, char c)
-{
-	int		w_len;
-	int		first;
-	char	*word;
-
-	w_len = 0;
-	first = *index;
-	while (s[*index] != c && s[*index])
-	{
-		w_len++;
-		(*index)++;
-	}
-	word = (char *)malloc(sizeof(char) * (w_len + 1));
-	if (!word)
-		return (0);
-	creatw(word, s, first, w_len);
-	return (word);
-}
-
-char	**create_word(char **daza, char const *s, char c, int k_len)
-{
-	int	i;
-	int	k;
-
-	i = 0;
-	k = 0;
-	while (s[i] && k < k_len)
-	{
-		if (s[i] != c)
-		{
-			daza[k] = create_single_word(s, &i, c);
-			if (!daza[k])
-			{
-				while (--k > -1)
-					free(daza[k]);
-				free(daza);
-				return (0);
-			}
-			k++;
-		}
-		else
-			i++;
-	}
-	daza[k] = NULL;
-	return (daza);
-}
-
-char	**ft_split(char *s, char c)
-{
-	int		k_len;
-	char	**str;
-
-	if (!s)
-		return (0);
-	k_len = countw(s, c);
-	str = (char **)malloc(sizeof(char *) * (k_len + 1));
-	if (!str)
-		return (0);
-	str = create_word(str, s, c, k_len);
-	free(s);
-	return (str);
-}
-
-int count_values(char **values) 
-{
-    int count = 0;
-    while (values[count] != NULL)
-        count++;
-    return count;
-}
-
-unsigned int **read_fdf_file(char *filename, int *rows, int *cols) 
+unsigned int **read_fdf_file(char *filename, t_data *data)
 {
     int fd = open(filename, O_RDONLY);
     if (fd < 0) 
@@ -337,12 +24,12 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
         values = ft_split(line, ' ');
         if (!map) 
         {
-            *cols = count_values(values);
-            map = malloc(sizeof(int *) * MAX_ROWS);
+            data->cols = count_values(values);
+            map = malloc(sizeof(unsigned int *) * data->cols);
         }
-        map[row] = malloc(sizeof(int) * (*cols));
+        map[row] = malloc(sizeof(unsigned int) * (data->cols));
         col = 0;
-        while (col < *cols) 
+        while (col < data->cols) 
         {
             if (ft_atoi(values[col]) == -10)
             {
@@ -368,7 +55,8 @@ unsigned int **read_fdf_file(char *filename, int *rows, int *cols)
 		free(values);
         row++;
     }
-    *rows = row;
+    map[row] = NULL;
+    data->rows = row;
     close(fd);
     return (map);
 }
@@ -381,7 +69,7 @@ void iso_projection(int *x, int *y, int z, t_data *data)
     int prev_y = *y;
 
     *x = (prev_x - prev_y) * cos(0.6) * SCALE_FACTOR + offsetx; // 150 derece
-    *y = (prev_x + prev_y) * sin(0.6) * SCALE_FACTOR + offsety - (z * 2);
+    *y = (prev_x + prev_y) * sin(0.6) * SCALE_FACTOR + offsety - (z * 5);
 }
 
 // Noktanın ekran içinde olup olmadığını kontrol eden fonksiyon
@@ -411,7 +99,7 @@ int clip_line(int *x0, int *y0, int *x1, int *y1)
     return (1);
 }
 
-void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win, t_data *data) 
+void draw_line(int x0, int y0, int x1, int y1, t_data *data) 
 {
 	 if (!clip_line(&x0, &y0, &x1, &y1))
         return; // Eğer çizgi tamamen ekran dışındaysa, çizme
@@ -433,7 +121,8 @@ void draw_line(int x0, int y0, int x1, int y1, void *mlx, void *win, t_data *dat
     while (1) 
     {
         // Sadece geçerli pikselleri çiz
-        if (is_inside(x0, y0)) {
+        if (is_inside(x0, y0))
+		{
             int pixel_index = (y0 * data->len) + (x0 * (data->bitt / 8));
             *(unsigned int *)(data->narr + pixel_index) = 0xADD8E6;  // Mavi renk
         }
@@ -476,14 +165,14 @@ void draw_map(unsigned int **map, t_data *data)
                 x_next = (x + 1) * TILE_SIZE;
                 y_next = y * TILE_SIZE;
                 iso_projection(&x_next, &y_next, map[y][x + 1], data);
-                draw_line(x_proj, y_proj, x_next, y_next, data->mlx, data->win, data);
+                draw_line(x_proj, y_proj, x_next, y_next, data);
             }
             if (y < data->rows - 1) 
             {
                 x_next = x * TILE_SIZE;
                 y_next = (y + 1) * TILE_SIZE;
                 iso_projection(&x_next, &y_next, map[y + 1][x], data);
-                draw_line(x_proj, y_proj, x_next, y_next, data->mlx, data->win, data);
+                draw_line(x_proj, y_proj, x_next, y_next, data);
             }
             x++;
         }
@@ -496,7 +185,7 @@ int redraw(void *param)
 {
     t_data *data = (t_data *)param;
     mlx_clear_window(data->mlx, data->win);
-    draw_map(data->map, data);
+	mlx_put_image_to_window(data->mlx, data->win, data->image, 0, 0);
     return (0);
 }
 
@@ -514,7 +203,8 @@ int close_window(void *param)
         }
         free(data->map);
     }
-	mlx_destroy_image(data->mlx, data->image);
+    if (data->image != NULL)
+	    mlx_destroy_image(data->mlx, data->image);
     if (data->win != NULL) 
 	{
         mlx_destroy_window(data->mlx, data->win);
@@ -523,7 +213,6 @@ int close_window(void *param)
 	{
         mlx_destroy_display(data->mlx);
         free(data->mlx);
-        data->mlx = NULL;
     }
     exit(0);
 }
@@ -532,19 +221,21 @@ int key_hook_esc(int keycode, void *param)
 {
     if (keycode == 65307) // ESC tuşu
 	{
-		int i = 0;
+		int i;
 		t_data *data = (t_data *)param;
 
     	if (data->map != NULL) 
 		{
-        	while (data->map[i]) 
+			i = 0;
+        	while (data->map[i] != NULL) 
 			{
             	free(data->map[i]);
 				i++;
         	}
         	free(data->map);
     	}
-		mlx_destroy_image(data->mlx, data->image);
+		if (data->image != NULL)
+			mlx_destroy_image(data->mlx, data->image);
     	if (data->win != NULL) 
 		{
         	mlx_destroy_window(data->mlx, data->win);
@@ -568,7 +259,6 @@ int key_hook_esc(int keycode, void *param)
 
 int main(int argc, char **argv)
 {
-	int i = 0;
 	t_data data;
 
     if (argc != 2) 
@@ -576,14 +266,18 @@ int main(int argc, char **argv)
         printf("Geçerli dosyayi girin!\n");
         return (1);
     }
+    data.mlx = NULL;
+    data.win = NULL;
+    data.image = NULL;
+    data.narr = NULL;
 	data.len = (1600 * 32) / 8;
 	data.bitt = 32;
     data.mlx = mlx_init();
-    data.win = mlx_new_window(data.mlx, 1600, 900, "FDF");
+    data.win = mlx_new_window(data.mlx, 1600, 900, "fdf");
 	data.image = mlx_new_image(data.mlx, 1600, 900);
 	data.narr = mlx_get_data_addr(data.image, &data.bitt, &data.len, &data.endian);
 
-    data.map = read_fdf_file(argv[1], &data.rows, &data.cols);
+    data.map = read_fdf_file(argv[1], &data);
 
     if (!data.map)
     {

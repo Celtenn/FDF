@@ -2,6 +2,7 @@
 
 unsigned int **read_fdf_file(char *filename, t_data *data)
 {
+	r_data r_data;
     int fd = open(filename, O_RDONLY);
     if (fd < 0) 
     {
@@ -9,92 +10,107 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
         return NULL;
     }
 
-    char *line = NULL;
-    char **temp = NULL;
-    char **values = NULL;
-    unsigned int **map = NULL;
-    int col = 0;
-    int row = 0;
-    unsigned int tmp = 0;
-	int j = 0;
+    r_data.line = NULL;
+    r_data.temp = NULL;
+    r_data.values = NULL;
+    r_data.map = NULL;
+    r_data.col = 0;
+    r_data.row = 0;
+    r_data.tmp = 0;
+	r_data.j = 0;
 
-    while ((line = get_next_line(fd))) 
+    while ((r_data.line = get_next_line(fd))) 
     {
-		values = NULL;
-        values = ft_split(line, ' ');
-        if (!map) 
+		r_data.values = NULL;
+        r_data.values = ft_split(r_data.line, ' ');
+        if (!r_data.map) 
         {
-            data->cols = count_values(values);
-            map = malloc(sizeof(unsigned int *) * (data->cols + 1));
+            data->cols = count_values(r_data.values);
+            r_data.map = malloc(sizeof(unsigned int *) * (data->cols + 1));
         }
-        map[row] = malloc(sizeof(unsigned int) * (data->cols));
-        col = 0;
-        while (col < data->cols) 
+        r_data.map[r_data.row] = malloc(sizeof(unsigned int) * (data->cols));
+        r_data.col = 0;
+        while (r_data.col < data->cols) 
         {
-            if (ft_atoi(values[col]) == -10)
+            if (ft_atoi(r_data.values[r_data.col]) == -10)
             {
-				j = 0;
-                temp = ft_split(values[col], ',');
-                tmp = atoi(temp[j]);
-                map[row][col] = tmp;
-                col++;
-				while (temp[j])
+				r_data.j = 0;
+                r_data.temp = ft_split(r_data.values[r_data.col], ',');
+                r_data.tmp = atoi(r_data.temp[r_data.j]);
+                r_data.map[r_data.row][r_data.col] = r_data.tmp;
+                r_data.col++;
+				while (r_data.temp[r_data.j])
 				{
-                	free(temp[j]);
-					j++;
+                	free(r_data.temp[r_data.j]);
+					r_data.j++;
 				}
-				free(temp);
+				free(r_data.temp);
             }
             else
             {
-                map[row][col] = ft_atoi(values[col]);
-                free(values[col]);
-                col++;
+                r_data.map[r_data.row][r_data.col] = ft_atoi(r_data.values[r_data.col]);
+                free(r_data.values[r_data.col]);
+                r_data.col++;
             }
         }
-		free(values);
-        row++;
+		free(r_data.values);
+        r_data.row++;
     }
-    map[row] = NULL;
-    data->rows = row;
+    r_data.map[r_data.row] = NULL;
+    data->rows = r_data.row;
     close(fd);
-    return (map);
+    return (r_data.map);
 }
 
 void iso_projection(int *x, int *y, int z, t_data *data) 
 {
-	int offsetx = 1600 / 2 - ((data->cols * TILE_SIZE) * SCALE_FACTOR) / 2;
-	int offsety = 900 / 2 - ((data->rows * TILE_SIZE) * SCALE_FACTOR) / 2;
+	int map_width = data->cols * TILE_SIZE;
+	int map_height = data->rows * TILE_SIZE;
+
+	int scale_x = 1600 / map_width;
+	int scale_y = 900 / map_height;
+
+	float scale = (scale_x < scale_y) ? scale_x : scale_y;
+	if (scale < 0.2)
+		scale = 0.25;
+	int offsetx = 1600 / 2 - ((data->cols * TILE_SIZE) * scale) / 2;
+	int offsety = 900 / 2 - ((data->rows * TILE_SIZE) * scale) / 2;
     int prev_x = *x;
     int prev_y = *y;
 
-    *x = (prev_x - prev_y) * cos(0.6) * SCALE_FACTOR + offsetx; // 150 derece
-    *y = (prev_x + prev_y) * sin(0.6) * SCALE_FACTOR + offsety - (z * 5);
+    *x = (prev_x - prev_y) * cos(0.6) * scale + offsetx; // 150 derece
+    *y = (prev_x + prev_y) * sin(0.6) * scale + offsety - (z * ex);
 }
 
-// Noktanın ekran içinde olup olmadığını kontrol eden fonksiyon
 int is_inside(int x, int y) 
 {
     return (x >= 0 && x < 1600 && y >= 0 && y < 900);
 }
 
-// Çizginin ekran içinde kalan kısmını hesaplayan fonksiyon
 int clip_line(int *x0, int *y0, int *x1, int *y1) 
 {
-    if (is_inside(*x0, *y0) && is_inside(*x1, *y1)) {
-        return (1); // Çizgi zaten tamamen ekranda, kırpmaya gerek yok
+    if (is_inside(*x0, *y0) && is_inside(*x1, *y1))
+	{
+        return (1);
     }
 
-    // Sınırları aşan koordinatları ekran içinde kalacak şekilde ayarla
-    if (*x0 < 0) *x0 = 0;
-    if (*x0 >= 1600) *x0 = 1600 - 1;
-    if (*y0 < 0) *y0 = 0;
-    if (*y0 >= 900) *y0 = 900 - 1;
+    if (*x0 < 0)
+		*x0 = 0;
+    if (*x0 >= 1600)
+		*x0 = 1600 - 1;
+    if (*y0 < 0)
+		*y0 = 0;
+    if (*y0 >= 900)
+		*y0 = 900 - 1;
 
-    if (*x1 < 0) *x1 = 0;
-    if (*x1 >= 1600) *x1 = 1600 - 1;
-    if (*y1 < 0) *y1 = 0;
-    if (*y1 >= 900) *y1 = 900 - 1;
+    if (*x1 < 0)
+		*x1 = 0;
+    if (*x1 >= 1600)
+		*x1 = 1600 - 1;
+    if (*y1 < 0)
+		*y1 = 0;
+    if (*y1 >= 900)
+		*y1 = 900 - 1;
 
     return (1);
 }
@@ -102,7 +118,7 @@ int clip_line(int *x0, int *y0, int *x1, int *y1)
 void draw_line(int x0, int y0, int x1, int y1, t_data *data) 
 {
 	 if (!clip_line(&x0, &y0, &x1, &y1))
-        return; // Eğer çizgi tamamen ekran dışındaysa, çizme
+        return;
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
     int sx;
@@ -120,7 +136,6 @@ void draw_line(int x0, int y0, int x1, int y1, t_data *data)
         sy = -1;
     while (1) 
     {
-        // Sadece geçerli pikselleri çiz
         if (is_inside(x0, y0))
 		{
             int pixel_index = (y0 * data->len) + (x0 * (data->bitt / 8));

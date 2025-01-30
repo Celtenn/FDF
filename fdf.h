@@ -9,7 +9,6 @@
 #include "minilibx-linux/mlx.h"
 #include <math.h>
 
-#define SCALE_FACTOR 0.3
 #define BUFFER_SIZE 1000
 #define TILE_SIZE 15
 
@@ -27,8 +26,20 @@ typedef struct s_data
 	char *narr;
 } t_data;
 
+typedef struct o_data
+{
+	char *line;
+    char **temp;
+    char **values;
+    unsigned int **map;
+    int col;
+    int row;
+    unsigned int tmp;
+	int j;
+} r_data;
 
 char	*get_next_line(int fd);
+int	ft_printf(char *str, ...);
 char	**ft_split(char *s, char c);
 int count_values(char **values);
 int	ft_atoi(char *str);

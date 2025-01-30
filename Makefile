@@ -6,7 +6,8 @@ LIBS = -Lminilibx-linux -lmlx -lXext -lX11 -lm
 SRC = deneme.c \
 		ft_split.c \
 		get_next_line.c \
-		get_next_line_utils.c
+		get_next_line_utils.c \
+		ft_printf.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

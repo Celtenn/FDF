@@ -64,13 +64,14 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
 
 void iso_projection(int *x, int *y, int z, t_data *data) 
 {
-	int map_width = data->cols * TILE_SIZE;
-	int map_height = data->rows * TILE_SIZE;
-
-	int scale_x = 1600 / map_width;
-	int scale_y = 900 / map_height;
-
-	float scale = (scale_x < scale_y) ? scale_x : scale_y;
+	int ex = 1;
+	float scale;
+	int scale_x = 1600 / (data->cols * TILE_SIZE);
+	int scale_y = 900 / (data->rows * TILE_SIZE);
+	if (scale_x < scale_y)
+		scale = scale_x;
+	if (scale_x > scale_y)
+		scale = scale_y;
 	if (scale < 0.2)
 		scale = 0.25;
 	int offsetx = 1600 / 2 - ((data->cols * TILE_SIZE) * scale) / 2;
@@ -260,7 +261,7 @@ int key_hook_esc(int keycode, void *param)
         	mlx_destroy_display(data->mlx);
         	free(data->mlx);
     	}
-        printf("ESC tuşuna basildi. Program kapaniyor.\n");
+        ft_printf("ESC tuşuna basildi. Program kapaniyor.\n");
 		exit(0);
     }
     return (0);
@@ -278,7 +279,7 @@ int main(int argc, char **argv)
 
     if (argc != 2) 
     {
-        printf("Geçerli dosyayi girin!\n");
+        ft_printf("Geçerli dosyayi girin!\n");
         return (1);
     }
     data.mlx = NULL;
@@ -296,7 +297,7 @@ int main(int argc, char **argv)
 
     if (!data.map)
     {
-        printf("Hatali harita!\n");
+        ft_printf("Hatali harita!\n");
         return (1);
     }
 

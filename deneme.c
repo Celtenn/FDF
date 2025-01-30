@@ -25,7 +25,7 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
         if (!map) 
         {
             data->cols = count_values(values);
-            map = malloc(sizeof(unsigned int *) * data->cols);
+            map = malloc(sizeof(unsigned int *) * (data->cols + 1));
         }
         map[row] = malloc(sizeof(unsigned int) * (data->cols));
         col = 0;
@@ -286,7 +286,6 @@ int main(int argc, char **argv)
     }
 
     draw_map(data.map, &data);
-	mlx_clear_window(data.mlx, data.win);
 	mlx_hook(data.win, 2, 1L << 0, key_hook_esc, &data);
     mlx_hook(data.win, 17, 0, close_window, &data);
 	mlx_expose_hook(data.win, redraw, &data);

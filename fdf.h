@@ -10,7 +10,7 @@
 #include <math.h>
 
 #define BUFFER_SIZE 1000
-#define TILE_SIZE 15
+#define TILE_SIZE 5
 
 typedef struct s_data
 {
@@ -47,6 +47,7 @@ int	ft_atoi(char *str);
 int	ft_strlen(const char *str);
 char	*ft_strchr(char *str, int c);
 char	*ft_strjoin(char *str, char *nbr);
+int	ft_isdigit(int a);
 
 
 #endif

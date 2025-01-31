@@ -1,6 +1,13 @@
 #include "fdf.h"
 #include <stdarg.h>
 
+int	ft_isdigit(int a)
+{
+	if (a >= '0' && a <= '9')
+		return (1);
+	return (0);
+}
+
 int	ft_putchar(char c, int *len_count)
 {
 	if (write(1, &c, 1) == -1)

@@ -7,7 +7,7 @@ unsigned int atoi_hex(char *str)
 
     while (*str)
     {
-        if (*str >= '0' && *str <= '9')
+        if (ft_isdigit(*str))
             val = *str - '0';
         else if (*str >= 'a' && *str <= 'f')
             val = *str - 'a' + 10;
@@ -46,8 +46,8 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
         if (!r_data.map) 
         {
             data->cols = count_values(r_data.values);
-            r_data.map = malloc(sizeof(unsigned int *) * (data->cols + 1));
-            data->color = malloc(sizeof(unsigned int *) * (data->cols + 1));
+            r_data.map = malloc(sizeof(unsigned int *) * (data->cols * 2));
+            data->color = malloc(sizeof(unsigned int *) * (data->cols * 2));
         }
         r_data.map[r_data.row] = malloc(sizeof(unsigned int) * (data->cols + 1));
         data->color[r_data.row] = malloc(sizeof(unsigned int) * (data->cols + 1));
@@ -58,9 +58,9 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
             {
 				r_data.j = 0;
                 r_data.temp = ft_split(r_data.values[r_data.col], ',');
-                r_data.tmp = atoi(r_data.temp[r_data.j]);
+                r_data.tmp = atoi(r_data.temp[0]);
                 r_data.map[r_data.row][r_data.col] = r_data.tmp;
-				r_data.tmp = atoi_hex(r_data.temp[r_data.j + 1]);
+				r_data.tmp = atoi_hex(r_data.temp[1]);
                 data->color[r_data.row][r_data.col] = r_data.tmp;
                 r_data.col++;
 				while (r_data.temp[r_data.j])
@@ -82,26 +82,28 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
         r_data.row++;
     }
     r_data.map[r_data.row] = NULL;
+	data->color[r_data.row] = NULL;
     data->rows = r_data.row;
-    close(fd);
     return (r_data.map);
 }
 
 void iso_projection(int *x, int *y, int z, t_data *data) 
 {
-	(void)data;
-	int ex = 1;
-	//float scale = 1;
-	//float scale_x = 1800 / (float)(data->cols * TILE_SIZE);
-	//float scale_y = 900 / (float)(data->rows * TILE_SIZE);
-	
-	//int offsetx = 1800 / 2 - ((data->cols * TILE_SIZE) * scale);
-	//int offsety = 900 / 2 - ((data->rows * TILE_SIZE) * scale);
+	double	width_distance;
+	double	height_distance;
+	double scale;
+
+	width_distance = (double)(1600) / (data->rows * TILE_SIZE);
+	height_distance = (double)(550) / (data->cols * TILE_SIZE);
+	if (width_distance > height_distance)
+		scale = height_distance;
+	else
+		scale = width_distance;
     int prev_x = *x;
     int prev_y = *y;
 
-    *x = (prev_x - prev_y) * cos(0.6) * 0.2 + 600; // 150 derece
-    *y = (prev_x + prev_y) * sin(0.6) * 0.2 + 200 - (z * ex);
+    *x = (prev_x - prev_y) * cos(0.6) * scale + 600; // 150 derece
+    *y = (prev_x + prev_y) * sin(0.6) * scale + 200 - z;
 }
 
 int is_inside(int x, int y) 
@@ -109,29 +111,10 @@ int is_inside(int x, int y)
     return (x >= 0 && x < 1600 && y >= 0 && y < 900);
 }
 
-int clip_line(int *x0, int *y0, int *x1, int *y1) 
-{
-    if (is_inside(*x0, *y0) && is_inside(*x1, *y1)) {
-        return (1);
-    }
-
-    if (*x0 < 0) *x0 = 0;
-    if (*x0 >= 1600) *x0 = 1600 - 1;
-    if (*y0 < 0) *y0 = 0;
-    if (*y0 >= 900) *y0 = 900 - 1;
-
-    if (*x1 < 0) *x1 = 0;
-    if (*x1 >= 1600) *x1 = 1600 - 1;
-    if (*y1 < 0) *y1 = 0;
-    if (*y1 >= 900) *y1 = 900 - 1;
-
-    return (1);
-}
-
 void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color) 
 {
-	 if (!clip_line(&x0, &y0, &x1, &y1))
-        return;
+	 //if (!clip_line(&x0, &y0, &x1, &y1))
+        //return;
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
     int sx;
@@ -149,11 +132,10 @@ void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color)
         sy = -1;
     while (1) 
     {
-        if (is_inside(x0, y0))
-		{
+        
             int pixel_index = (y0 * data->len) + (x0 * (data->bitt / 8));
             *(unsigned int *)(data->narr + pixel_index) = color;  // Mavi renk
-        }
+        
         if (x0 == x1 && y0 == y1)
             break;
         e2 = 2 * err;
@@ -193,14 +175,14 @@ void draw_map(unsigned int **map, t_data *data)
                 x_next = (x + 1) * TILE_SIZE;
                 y_next = y * TILE_SIZE;
                 iso_projection(&x_next, &y_next, map[y][x + 1], data);
-                draw_line(x_proj, y_proj, x_next, y_next, data, data->color[y][x]);
+                draw_line(x_proj, y_proj, x_next, y_next, data, data->color[y][x + 1]);
             }
             if (y < data->rows - 1) 
             {
                 x_next = x * TILE_SIZE;
                 y_next = (y + 1) * TILE_SIZE;
                 iso_projection(&x_next, &y_next, map[y + 1][x], data);
-                draw_line(x_proj, y_proj, x_next, y_next, data, data->color[y][x]);
+                draw_line(x_proj, y_proj, x_next, y_next, data, data->color[y + 1][x]);
             }
             x++;
         }
@@ -231,6 +213,16 @@ int close_window(void *param)
         }
         free(data->map);
     }
+	if (data->color != NULL) 
+		{
+			i = 0;
+        	while (data->color[i] != NULL) 
+			{
+            	free(data->color[i]);
+				i++;
+        	}
+        	free(data->color);
+    	}
     if (data->image != NULL)
 	    mlx_destroy_image(data->mlx, data->image);
     if (data->win != NULL) 
@@ -261,6 +253,16 @@ int key_hook_esc(int keycode, void *param)
 				i++;
         	}
         	free(data->map);
+    	}
+		if (data->color != NULL) 
+		{
+			i = 0;
+        	while (data->color[i] != NULL) 
+			{
+            	free(data->color[i]);
+				i++;
+        	}
+        	free(data->color);
     	}
 		if (data->image != NULL)
 			mlx_destroy_image(data->mlx, data->image);
@@ -298,10 +300,10 @@ int main(int argc, char **argv)
     data.win = NULL;
     data.image = NULL;
     data.narr = NULL;
-	data.len = (1800 * 32) / 8;
+	data.len = (2000 * 32) / 8;
 	data.bitt = 32;
     data.mlx = mlx_init();
-    data.win = mlx_new_window(data.mlx, 1800, 900, "fdf");
+    data.win = mlx_new_window(data.mlx, 2000, 1500, "fdf");
 	data.image = mlx_new_image(data.mlx, 1800, 900);
 	data.narr = mlx_get_data_addr(data.image, &data.bitt, &data.len, &data.endian);
 

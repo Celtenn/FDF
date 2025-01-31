@@ -19,11 +19,6 @@ char	*ft_line(char *str)
 		arr[i] = str[i];
 		i++;
 	}
-	if (str[i] == '\n')
-	{
-		arr[i] = str[i];
-		i++;
-	}
 	arr[i] = '\0';
 	return (arr);
 }

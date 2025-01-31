@@ -7,7 +7,7 @@ int	ft_atoi(char *str)
 
 	i = 0;
 	number = 0;
-	while (str[i])
+	while (str[i] != '\0')
 	{
 		if (str[i] < '0' || str[i] > '9')
 		{
@@ -15,6 +15,7 @@ int	ft_atoi(char *str)
 		}
 		number = (str[i] - '0') + (number * 10);
 		i++;
+		
 	}
 	return (number);
 }

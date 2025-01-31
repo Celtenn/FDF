@@ -17,7 +17,7 @@ typedef struct s_data
     void *mlx;
     void *win;
 	void *image;
-    unsigned int **map;
+    int **map;
 	unsigned int **color;
     int rows;
     int cols;
@@ -32,10 +32,11 @@ typedef struct o_data
 	char *line;
     char **temp;
     char **values;
-    unsigned int **map;
+    int **map;
     int col;
     int row;
-    unsigned int tmp;
+    unsigned int tmpu;
+	int tmpi;
 	int j;
 } r_data;
 

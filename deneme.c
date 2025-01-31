@@ -19,7 +19,7 @@ unsigned int atoi_hex(char *str)
     return res;
 }
 
-unsigned int **read_fdf_file(char *filename, t_data *data)
+int **read_fdf_file(char *filename, t_data *data)
 {
 	r_data r_data;
 	char *base = "0xADD8E6";
@@ -36,7 +36,8 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
     r_data.map = NULL;
     r_data.col = 0;
     r_data.row = 0;
-    r_data.tmp = 0;
+    r_data.tmpu = 0;
+	r_data.tmpi = 0;
 	r_data.j = 0;
 
     while ((r_data.line = get_next_line(fd))) 
@@ -46,10 +47,10 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
         if (!r_data.map) 
         {
             data->cols = count_values(r_data.values);
-            r_data.map = malloc(sizeof(unsigned int *) * (data->cols * 2));
+            r_data.map = malloc(sizeof(int *) * (data->cols * 2));
             data->color = malloc(sizeof(unsigned int *) * (data->cols * 2));
         }
-        r_data.map[r_data.row] = malloc(sizeof(unsigned int) * (data->cols + 1));
+        r_data.map[r_data.row] = malloc(sizeof(int) * (data->cols + 1));
         data->color[r_data.row] = malloc(sizeof(unsigned int) * (data->cols + 1));
         r_data.col = 0;
         while (r_data.col < data->cols) 
@@ -58,10 +59,10 @@ unsigned int **read_fdf_file(char *filename, t_data *data)
             {
 				r_data.j = 0;
                 r_data.temp = ft_split(r_data.values[r_data.col], ',');
-                r_data.tmp = atoi(r_data.temp[0]);
-                r_data.map[r_data.row][r_data.col] = r_data.tmp;
-				r_data.tmp = atoi_hex(r_data.temp[1]);
-                data->color[r_data.row][r_data.col] = r_data.tmp;
+                r_data.tmpi = atoi(r_data.temp[0]);
+                r_data.map[r_data.row][r_data.col] = r_data.tmpi;
+				r_data.tmpu = atoi_hex(r_data.temp[1]);
+                data->color[r_data.row][r_data.col] = r_data.tmpu;
                 r_data.col++;
 				while (r_data.temp[r_data.j])
 				{
@@ -130,11 +131,11 @@ void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color)
         sy = 1;
     if (y0 > y1)
         sy = -1;
-    while (1) 
+    while (1)
     {
         
             int pixel_index = (y0 * data->len) + (x0 * (data->bitt / 8));
-            *(unsigned int *)(data->narr + pixel_index) = color;  // Mavi renk
+            *(unsigned int *)(data->narr + pixel_index) = color;
         
         if (x0 == x1 && y0 == y1)
             break;
@@ -152,7 +153,7 @@ void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color)
     }
 }
 
-void draw_map(unsigned int **map, t_data *data) 
+void draw_map(int **map, t_data *data) 
 {
     int y = 0;
     int x = 0;

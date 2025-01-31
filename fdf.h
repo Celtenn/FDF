@@ -18,6 +18,7 @@ typedef struct s_data
     void *win;
 	void *image;
     unsigned int **map;
+	unsigned int **color;
     int rows;
     int cols;
 	int len;

@@ -107,11 +107,6 @@ void iso_projection(int *x, int *y, int z, t_data *data)
     *y = (prev_x + prev_y) * sin(0.6) * scale + 200 - z;
 }
 
-int is_inside(int x, int y) 
-{
-    return (x >= 0 && x < 1600 && y >= 0 && y < 900);
-}
-
 void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color) 
 {
 	 //if (!clip_line(&x0, &y0, &x1, &y1))
@@ -131,7 +126,7 @@ void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color)
         sy = 1;
     if (y0 > y1)
         sy = -1;
-    while (1)
+    while (1) 
     {
         
             int pixel_index = (y0 * data->len) + (x0 * (data->bitt / 8));

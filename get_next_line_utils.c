@@ -3,11 +3,18 @@
 int	ft_atoi(char *str)
 {
 	unsigned int		i;
-	unsigned long int	number;
+	int sign;
+	long int	number;
 
 	i = 0;
 	number = 0;
-	while (str[i] != '\0')
+	sign = 1;
+	if (str[i] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+	while (str[i])
 	{
 		if (str[i] < '0' || str[i] > '9')
 		{
@@ -17,7 +24,7 @@ int	ft_atoi(char *str)
 		i++;
 		
 	}
-	return (number);
+	return (number * sign);
 }
 
 int	ft_strlen(const char *str)

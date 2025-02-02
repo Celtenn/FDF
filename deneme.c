@@ -46,10 +46,10 @@ int **read_fdf_file(char *filename, t_data *data)
         r_data.values = ft_split(r_data.line, ' ');
         if (!r_data.map) 
         {
-            data->cols = count_values(r_data.values);
-            r_data.map = malloc(sizeof(int *) * (data->cols * 2));
-            data->color = malloc(sizeof(unsigned int *) * (data->cols * 2));
+            r_data.map = malloc(sizeof(int *) * (data->rows + 1));
+            data->color = malloc(sizeof(unsigned int *) * (data->rows + 1));
         }
+        data->cols = count_values(r_data.values);
         r_data.map[r_data.row] = malloc(sizeof(int) * (data->cols + 1));
         data->color[r_data.row] = malloc(sizeof(unsigned int) * (data->cols + 1));
         r_data.col = 0;
@@ -84,7 +84,6 @@ int **read_fdf_file(char *filename, t_data *data)
     }
     r_data.map[r_data.row] = NULL;
 	data->color[r_data.row] = NULL;
-    data->rows = r_data.row;
     return (r_data.map);
 }
 
@@ -292,15 +291,25 @@ int main(int argc, char **argv)
         printf("Geçerli dosyayi girin!\n");
         return (1);
     }
+    int i = 0;
+    char *str;
+    int fd = open(argv[1], O_RDONLY);
+    while ((str = get_next_line(fd)))
+    {
+        free(str);
+        i++;
+    }
+    close(fd);
+    data.rows = i;
     data.mlx = NULL;
     data.win = NULL;
     data.image = NULL;
     data.narr = NULL;
-	data.len = (2000 * 32) / 8;
+	data.len = (1800 * 32) / 8;
 	data.bitt = 32;
     data.mlx = mlx_init();
-    data.win = mlx_new_window(data.mlx, 2000, 1500, "fdf");
-	data.image = mlx_new_image(data.mlx, 1800, 900);
+    data.win = mlx_new_window(data.mlx, 1800, 900, "fdf");
+	data.image = mlx_new_image(data.mlx, 1500, 900);
 	data.narr = mlx_get_data_addr(data.image, &data.bitt, &data.len, &data.endian);
 
     data.map = read_fdf_file(argv[1], &data);

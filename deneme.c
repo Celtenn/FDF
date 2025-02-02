@@ -108,8 +108,6 @@ void iso_projection(int *x, int *y, int z, t_data *data)
 
 void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color) 
 {
-	 //if (!clip_line(&x0, &y0, &x1, &y1))
-        //return;
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
     int sx;
@@ -127,9 +125,8 @@ void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color)
         sy = -1;
     while (1) 
     {
-        
-            int pixel_index = (y0 * data->len) + (x0 * (data->bitt / 8));
-            *(unsigned int *)(data->narr + pixel_index) = color;
+        int pixel_index = (y0 * data->len) + (x0 * (data->bitt / 8));
+        *(unsigned int *)(data->narr + pixel_index) = color;
         
         if (x0 == x1 && y0 == y1)
             break;

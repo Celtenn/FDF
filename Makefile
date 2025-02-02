@@ -3,11 +3,15 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 INCLUDES = -Iminilibx-linux
 LIBS = -Lminilibx-linux -lmlx -lXext -lX11 -lm
-SRC = deneme.c \
+SRC = fdf.c \
 		ft_split.c \
 		get_next_line.c \
 		get_next_line_utils.c \
-		ft_printf.c
+		ft_printf.c \
+		readfdf.c \
+		drawfdf.c \
+		drawlinefdf.c \
+		exitfdf.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

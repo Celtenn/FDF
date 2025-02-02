@@ -59,7 +59,7 @@ int **read_fdf_file(char *filename, t_data *data)
             {
 				r_data.j = 0;
                 r_data.temp = ft_split(r_data.values[r_data.col], ',');
-                r_data.tmpi = atoi(r_data.temp[0]);
+                r_data.tmpi = ft_atoi(r_data.temp[0]);
                 r_data.map[r_data.row][r_data.col] = r_data.tmpi;
 				r_data.tmpu = atoi_hex(r_data.temp[1]);
                 data->color[r_data.row][r_data.col] = r_data.tmpu;
@@ -73,7 +73,7 @@ int **read_fdf_file(char *filename, t_data *data)
             }
             else
             {
-                r_data.map[r_data.row][r_data.col] = atoi(r_data.values[r_data.col]);
+                r_data.map[r_data.row][r_data.col] = ft_atoi(r_data.values[r_data.col]);
 				data->color[r_data.row][r_data.col] = atoi_hex(base);
                 free(r_data.values[r_data.col]);
                 r_data.col++;

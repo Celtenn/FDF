@@ -5,6 +5,8 @@ unsigned int	atoi_hex(char *str)
 	unsigned int	res;
 	int				val;
 
+	if (!str)
+		return (0);
 	res = 0;
 	val = 0;
 	while (*str)

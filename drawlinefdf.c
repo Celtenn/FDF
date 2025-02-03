@@ -8,8 +8,11 @@ void	set_direction(int x0, int x1, int y0, int y1, int *sx, int *sy)
 
 void draw_pixel(int x, int y, t_data *data, unsigned int color)
 {
+	if (x >= 0 && x < 1500 && y >= 0 && y < 900)
+    {
 	int pixel_index = (y * data->len) + (x * (data->bitt / 8));
 	*(unsigned int *)(data->narr + pixel_index) = color;
+	}
 }
 
 void update_position(int *x, int *y, int *err, int dx, int dy, int sx, int sy)

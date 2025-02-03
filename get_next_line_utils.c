@@ -3,8 +3,8 @@
 int	ft_atoi(char *str)
 {
 	unsigned int		i;
-	int sign;
-	long int	number;
+	int					sign;
+	long int			number;
 
 	i = 0;
 	number = 0;
@@ -22,7 +22,6 @@ int	ft_atoi(char *str)
 		}
 		number = (str[i] - '0') + (number * 10);
 		i++;
-		
 	}
 	return (number * sign);
 }

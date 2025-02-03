@@ -52,7 +52,6 @@ int	ft_isdigit(int a);
 int **read_fdf_file(char *filename, t_data *data);
 void draw_map(int **map, t_data *data);
 void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color);
-int redraw(void *param);
 int close_window(void *param);
 int key_hook_esc(int keycode, void *param);
 unsigned int atoi_hex(char *str);

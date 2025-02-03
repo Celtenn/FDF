@@ -21,6 +21,16 @@ unsigned int	atoi_hex(char *str)
 	return (res);
 }
 
+int	redraw(void *param)
+{
+	t_data	*data;
+
+	data = (t_data *)param;
+	mlx_clear_window(data->mlx, data->win);
+	mlx_put_image_to_window(data->mlx, data->win, data->image, 0, 0);
+	return (0);
+}
+
 int	count_rows(char *filename)
 {
 	int		fd;

@@ -2,21 +2,21 @@
 
 void	handle_movement(int keycode, t_data *data)
 {
-	if (keycode == 65362) // Up
+	if (keycode == 65362)
 		data->offsety -= 20;
-	else if (keycode == 65364) // Down
+	else if (keycode == 65364)
 		data->offsety += 20;
-	else if (keycode == 65363) // Right
+	else if (keycode == 65363)
 		data->offsetx += 20;
-	else if (keycode == 65361) // Left
+	else if (keycode == 65361)
 		data->offsetx -= 20;
 }
 
 void	handle_scale(int keycode, t_data *data)
 {
-	if (keycode == 119) // W (Increase Scale)
+	if (keycode == 119)
 		data->scale += 0.1;
-	else if (keycode == 115) // S (Decrease Scale)
+	else if (keycode == 115)
 	{
 		if (data->scale > 0)
 			data->scale -= 0.1;
@@ -25,12 +25,12 @@ void	handle_scale(int keycode, t_data *data)
 
 void	handle_zoom(int keycode, t_data *data)
 {
-	if (keycode == 113) // Q (Zoom In)
+	if (keycode == 113)
 	{
 		data->zoom += 1;
 		data->scale = calculate_scale(data);
 	}
-	else if (keycode == 101) // E (Zoom Out)
+	else if (keycode == 101)
 	{
 		if (data->zoom > 1)
 		{
@@ -45,7 +45,7 @@ int	key_hook(int keycode, void *param)
 	t_data	*data;
 
 	data = (t_data *)param;
-	if (keycode == 65307) // ESC
+	if (keycode == 65307)
 		handle_esc_key(data);
 	else
 	{

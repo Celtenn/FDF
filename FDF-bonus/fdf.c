@@ -67,6 +67,9 @@ void	init_data(t_data *data)
 	data->image = mlx_new_image(data->mlx, 1500, 900);
 	t = mlx_get_data_addr(data->image, &data->bitt, &data->len, &data->endian);
 	data->narr = t;
+	data->offsetx = 600;
+	data->offsety = 200;
+	data->zoom = 3;
 }
 
 int	main(int argc, char **argv)
@@ -81,9 +84,6 @@ int	main(int argc, char **argv)
 	data.rows = count_rows(argv[1]);
 	init_data(&data);
 	data.map = read_fdf_file(argv[1], &data);
-	data.offsetx = 600;
-	data.offsety = 200;
-	data.zoom = 1;
 	data.scale = calculate_scale(&data);
 	if (!data.map)
 	{

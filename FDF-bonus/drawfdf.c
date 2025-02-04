@@ -15,13 +15,15 @@ double	calculate_scale(t_data *data)
 
 void	iso_projection(int *x, int *y, int z, t_data *data)
 {
+	double	scl;
 	int		prev_x;
 	int		prev_y;
 
 	prev_x = *x;
 	prev_y = *y;
-	*x = (prev_x - prev_y) * cos(0.6) * data->scale + data->offsetx;
-	*y = (prev_x + prev_y) * sin(0.6) * data->scale + data->offsety - (z * data->scale);
+	scl = data->scale;
+	*x = (prev_x - prev_y) * cos(0.6) * scl + data->offsetx;
+	*y = (prev_x + prev_y) * sin(0.6) * scl + data->offsety - (z * scl);
 }
 
 void	draw_horizontal_lines(int y, t_data *data, int **map)

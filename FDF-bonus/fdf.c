@@ -70,6 +70,7 @@ void	init_data(t_data *data)
 	data->offsetx = 600;
 	data->offsety = 200;
 	data->zoom = 3;
+	data->proj = 0.5236;
 }
 
 int	main(int argc, char **argv)

@@ -27,6 +27,7 @@ typedef struct s_data
     int offsetx;
     int offsety;
     double scale;
+    double proj;
     int zoom;
 } t_data;
 

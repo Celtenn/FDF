@@ -1,5 +1,21 @@
 #include "fdf.h"
 
+void	handle_proj(int keycode, t_data *data)
+{
+	if (keycode == 114)
+	{
+		if (data->proj == 0.5236)
+		{
+			data->proj = 2.618;
+			data->scale = calculate_scale(data);
+		}
+		else
+		{
+			data->proj = 0.5236;
+			data->scale = calculate_scale(data);
+		}
+	}
+}
 void	handle_movement(int keycode, t_data *data)
 {
 	if (keycode == 65362)
@@ -52,6 +68,7 @@ int	key_hook(int keycode, void *param)
 		handle_movement(keycode, data);
 		handle_scale(keycode, data);
 		handle_zoom(keycode, data);
+		handle_proj(keycode, data);
 		mlx_destroy_image(data->mlx, data->image);
 		data->image = mlx_new_image(data->mlx, 1500, 900);
 		draw_map(data->map, data);

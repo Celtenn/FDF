@@ -10,7 +10,7 @@
 #include <math.h>
 
 #define BUFFER_SIZE 1000
-#define TILE_SIZE 5
+#define TILE_SIZE 7
 
 typedef struct s_data
 {

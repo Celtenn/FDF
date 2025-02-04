@@ -23,7 +23,7 @@ void	iso_projection(int *x, int *y, int z, t_data *data)
 	prev_x = *x;
 	prev_y = *y;
 	*x = (prev_x - prev_y) * cos(0.6) * scale + 600;
-	*y = (prev_x + prev_y) * sin(0.6) * scale + 200 - z;
+	*y = (prev_x + prev_y) * sin(0.6) * scale + 200 - (z * scale);
 }
 
 void	draw_horizontal_lines(int y, t_data *data, int **map)

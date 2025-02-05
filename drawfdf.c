@@ -5,8 +5,8 @@ double	calculate_scale(t_data *data)
 	double	width_distance;
 	double	height_distance;
 
-	width_distance = (double)(1600) / (data->rows * TILE_SIZE);
-	height_distance = (double)(550) / (data->cols * TILE_SIZE);
+	width_distance = (double)(900) / (data->rows * TILE_SIZE);
+	height_distance = (double)(600) / (data->cols * TILE_SIZE);
 	if (width_distance > height_distance)
 		return (height_distance);
 	else
@@ -22,7 +22,7 @@ void	iso_projection(int *x, int *y, int z, t_data *data)
 	scale = calculate_scale(data);
 	prev_x = *x;
 	prev_y = *y;
-	*x = (prev_x - prev_y) * cos(0.6) * scale + 600;
+	*x = (prev_x - prev_y) * cos(0.6) * scale + 900;
 	*y = (prev_x + prev_y) * sin(0.6) * scale + 200 - (z * scale);
 }
 

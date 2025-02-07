@@ -1,52 +1,53 @@
 #include "fdf.h"
 
-void	set_direction(int x0, int x1, int y0, int y1, int *sx, int *sy)
+void	draw_pixel(int x, int y, t_data *data, unsigned int color)
 {
-	*sx = (x0 < x1) ? 1 : -1;
-	*sy = (y0 < y1) ? 1 : -1;
-}
+	int	pixel_index;
 
-void draw_pixel(int x, int y, t_data *data, unsigned int color)
-{
-	if (x >= 0 && x <= 1800 && y >= 0 && y <= 1200)
-    {
-	int pixel_index = (y * data->len) + (x * (data->bitt / 8));
-	*(unsigned int *)(data->narr + pixel_index) = color;
-	}
-}
-
-void update_position(int *x, int *y, int *err, int dx, int dy, int sx, int sy)
-{
-	int e2 = 2 * (*err);
-
-	if (e2 > -dy)
+	if (x >= 0 && x < 1500 && y >= 0 && y < 900)
 	{
-		*err -= dy;
-		*x += sx;
-	}
-	if (e2 < dx)
-	{
-		*err += dx;
-		*y += sy;
+		pixel_index = (y * data->len) + (x * (data->bitt / 8));
+		*(unsigned int *)(data->narr + pixel_index) = color;
 	}
 }
 
-void draw_line(int x0, int y0, int x1, int y1, t_data *data, unsigned int color)
+void	update_position(int *x, int *y, int *err, t_data *data)
 {
-	int dx = abs(x1 - x0);
-	int dy = abs(y1 - y0);
-	int sx, sy;
-	int err = dx - dy;
+	int	e2;
 
-	set_direction(x0, x1, y0, y1, &sx, &sy);
+	e2 = 2 * (*err);
+	if (e2 > -data->dy)
+	{
+		*err -= data->dy;
+		*x += data->sx;
+	}
+	if (e2 < data->dx)
+	{
+		*err += data->dx;
+		*y += data->sy;
+	}
+}
 
+void	draw_line(int x0, int y0, t_data *data, unsigned int color)
+{
+	int	err;
+
+	data->dx = abs(data->x1 - x0);
+	data->dy = abs(data->y1 - y0);
+	err = data->dx - data->dy;
+	if (x0 < data->x1)
+		data->sx = 1;
+	else
+		data->sx = -1;
+	if (y0 < data->y1)
+		data->sy = 1;
+	else
+		data->sy = -1;
 	while (1)
 	{
 		draw_pixel(x0, y0, data, color);
-
-		if (x0 == x1 && y0 == y1)
-			break;
-
-		update_position(&x0, &y0, &err, dx, dy, sx, sy);
+		if (x0 == data->x1 && y0 == data->y1)
+			break ;
+		update_position(&x0, &y0, &err, data);
 	}
 }

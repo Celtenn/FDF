@@ -64,7 +64,7 @@ void	handle_esc_key(t_data *data)
 		mlx_destroy_display(data->mlx);
 		free(data->mlx);
 	}
-	printf("ESC tuşuna basildi. Program kapaniyor.\n");
+	ft_printf("ESC tuşuna basildi. Program kapaniyor.\n");
 	exit(0);
 }
 

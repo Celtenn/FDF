@@ -61,5 +61,6 @@ void			draw_line(int x0, int y0, t_data *data, unsigned int color);
 int				close_window(void *param);
 int				key_hook_esc(int keycode, void *param);
 unsigned int	atoi_hex(char *str);
+void			free_map(int **map);
 
 #endif

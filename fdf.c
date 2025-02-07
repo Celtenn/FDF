@@ -72,7 +72,7 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		printf("Geçerli dosyayi girin!\n");
+		ft_printf("Geçerli dosyayi girin!\n");
 		return (1);
 	}
 	data.rows = count_rows(argv[1]);
@@ -80,7 +80,7 @@ int	main(int argc, char **argv)
 	data.map = read_fdf_file(argv[1], &data);
 	if (!data.map)
 	{
-		printf("Hatali harita!\n");
+		ft_printf("Hatali harita!\n");
 		close_window(&data);
 		return (1);
 	}

@@ -81,6 +81,7 @@ int	main(int argc, char **argv)
 	if (!data.map)
 	{
 		printf("Hatali harita!\n");
+		close_window(&data);
 		return (1);
 	}
 	draw_map(data.map, &data);

@@ -23,16 +23,6 @@ unsigned int	atoi_hex(char *str)
 	return (res);
 }
 
-int	redraw(void *param)
-{
-	t_data	*data;
-
-	data = (t_data *)param;
-	mlx_clear_window(data->mlx, data->win);
-	mlx_put_image_to_window(data->mlx, data->win, data->image, 0, 0);
-	return (0);
-}
-
 int	count_rows(char *filename)
 {
 	int		fd;
@@ -96,7 +86,6 @@ int	main(int argc, char **argv)
 	draw_map(data.map, &data);
 	mlx_hook(data.win, 2, 1L << 0, key_hook_esc, &data);
 	mlx_hook(data.win, 17, 0, close_window, &data);
-	mlx_expose_hook(data.win, redraw, &data);
 	mlx_loop(data.mlx);
 	return (0);
 }

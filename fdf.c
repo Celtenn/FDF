@@ -54,6 +54,8 @@ int	count_rows(char *filename)
 
 void	init_data(t_data *data)
 {
+	char	*t;
+
 	data->mlx = NULL;
 	data->win = NULL;
 	data->image = NULL;
@@ -63,10 +65,15 @@ void	init_data(t_data *data)
 	data->mlx = mlx_init();
 	data->win = mlx_new_window(data->mlx, 1500, 900, "fdf");
 	data->image = mlx_new_image(data->mlx, 1500, 900);
-	data->narr = mlx_get_data_addr(data->image, &data->bitt, &data->len, &data->endian);
+	t = mlx_get_data_addr(data->image, &data->bitt, &data->len, &data->endian);
+	data->narr = t;
 	data->zoom = 3;
 	data->x1 = 0;
 	data->y1 = 0;
+	data->dx = 0;
+	data->dy = 0;
+	data->sx = 0;
+	data->sy = 0;
 }
 
 int	main(int argc, char **argv)

@@ -18,11 +18,28 @@ void	allocate_memory(t_data *data, t_temp *t_temp)
 	if (!t_temp->map)
 	{
 		t_temp->map = malloc(sizeof(int *) * (data->rows + 1));
+		if (!t_temp->map)
+			close_window(data);
 		data->color = malloc(sizeof(unsigned int *) * (data->rows + 1));
+		if (!data->color)
+		{
+			free_map(t_temp->map);
+			close_window(data);
+		}
 	}
 	data->cols = count_values(t_temp->values);
 	t_temp->map[t_temp->row] = malloc(sizeof(int) * (data->cols + 1));
+	if (!t_temp->map[t_temp->row])
+	{
+		free_map(t_temp->map);
+		close_window(data);
+	}
 	data->color[t_temp->row] = malloc(sizeof(unsigned int) * (data->cols + 1));
+	if (!data->color[t_temp->row])
+	{
+		free_map(t_temp->map);
+		close_window(data);
+	}
 }
 
 void	process_value(t_temp *t_temp, t_data *data, char *value)

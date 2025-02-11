@@ -1,12 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   drawfdf.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idkahram <idkahram@student.42kocaeli.co    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/11 01:35:59 by idkahram          #+#    #+#             */
+/*   Updated: 2025/02/11 01:35:59 by idkahram         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
+#include <math.h>
+#include "minilibx-linux/mlx.h"
 
 double	calculate_scale(t_data *data)
 {
 	double	width_distance;
 	double	height_distance;
 
-	width_distance = (750 / (data->rows * data->zoom));
-	height_distance = (450 / (data->cols * data->zoom));
+	width_distance = (750 / (data->rows * data->height));
+	height_distance = (450 / (data->cols * data->height));
 	if (width_distance > height_distance)
 		return (height_distance);
 	else
@@ -20,8 +34,8 @@ void	iso_projection(int *x, int *y, int z, t_data *data)
 	int		prev_y;
 
 	scale = calculate_scale(data);
-	prev_x = *x * data->zoom;
-	prev_y = *y * data->zoom;
+	prev_x = *x * data->height;
+	prev_y = *y * data->height;
 	*x = ((prev_x - prev_y) * cos(0.5236) * scale) + 750;
 	*y = ((prev_x + prev_y) * sin(0.5236) * scale) + 200 - (z * scale);
 }

@@ -1,4 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   readfdf.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idkahram <idkahram@student.42kocaeli.co    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/11 01:37:34 by idkahram          #+#    #+#             */
+/*   Updated: 2025/02/11 01:37:34 by idkahram         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 void	init_r_data(t_temp *t_temp)
 {
@@ -48,6 +63,8 @@ void	process_value(t_temp *t_temp, t_data *data, char *value)
 	{
 		t_temp->j = 0;
 		t_temp->temp = ft_split(value, ',');
+		if (!t_temp->temp)
+			close_window(data);
 		t_temp->tmpi = ft_atoi(t_temp->temp[0]);
 		t_temp->map[t_temp->row][t_temp->col] = t_temp->tmpi;
 		t_temp->tmpu = atoi_hex(t_temp->temp[1]);
@@ -70,6 +87,8 @@ void	process_value(t_temp *t_temp, t_data *data, char *value)
 void	process_line(t_temp *t_temp, t_data *data, char *line)
 {
 	t_temp->values = ft_split(line, ' ');
+	if (!t_temp->values)
+		close_window(data);
 	allocate_memory(data, t_temp);
 	t_temp->col = 0;
 	while (t_temp->col < data->cols)
@@ -88,8 +107,8 @@ int	**read_fdf_file(char *filename, t_data *data)
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
-		perror("Error opening file");
-		return (0);
+		ft_printf("Error opening file\n");
+		close_window(data);
 	}
 	init_r_data(&t_temp);
 	t_temp.line = get_next_line(fd);

@@ -1,4 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   drawlinefdf.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idkahram <idkahram@student.42kocaeli.co    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/11 01:36:07 by idkahram          #+#    #+#             */
+/*   Updated: 2025/02/11 01:36:07 by idkahram         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
+#include <stdlib.h>
 
 void	draw_pixel(int x, int y, t_data *data, unsigned int color)
 {

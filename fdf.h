@@ -1,13 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idkahram <idkahram@student.42kocaeli.co    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/11 01:36:45 by idkahram          #+#    #+#             */
+/*   Updated: 2025/02/11 01:36:45 by idkahram         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FDF_H
 # define FDF_H
 
-# include <stdlib.h>
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include "minilibx-linux/mlx.h"
-# include <math.h>
+# include <stdarg.h>
 
 # define BUFFER_SIZE 1000
 
@@ -24,7 +30,7 @@ typedef struct s_data
 	int				bitt;
 	int				endian;
 	char			*narr;
-	double			zoom;
+	double			height;
 	int				x1;
 	int				y1;
 	int				dx;

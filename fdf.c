@@ -1,4 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idkahram <idkahram@student.42kocaeli.co    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/11 02:24:51 by idkahram          #+#    #+#             */
+/*   Updated: 2025/02/11 02:24:51 by idkahram         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
+#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include "minilibx-linux/mlx.h"
 
 unsigned int	atoi_hex(char *str)
 {
@@ -42,22 +58,37 @@ int	count_rows(char *filename)
 	return (rows);
 }
 
-void	init_data(t_data *data)
+void	init_mlx(t_data *data)
 {
 	char	*t;
 
+	data->mlx = mlx_init();
+	if (!data->mlx)
+		close_window(data);
+	data->win = mlx_new_window(data->mlx, 1500, 900, "fdf");
+	if (!data->win)
+		close_window(data);
+	data->image = mlx_new_image(data->mlx, 1500, 900);
+	if (!data->image)
+		close_window(data);
+	t = mlx_get_data_addr(data->image, &data->bitt, &data->len, &data->endian);
+	if (!t)
+		close_window(data);
+	data->narr = t;
+}
+
+void	init_data(t_data *data)
+{
 	data->mlx = NULL;
 	data->win = NULL;
 	data->image = NULL;
 	data->narr = NULL;
+	data->map = NULL;
+	data->color = NULL;
 	data->len = (1500 * 32) / 8;
 	data->bitt = 32;
-	data->mlx = mlx_init();
-	data->win = mlx_new_window(data->mlx, 1500, 900, "fdf");
-	data->image = mlx_new_image(data->mlx, 1500, 900);
-	t = mlx_get_data_addr(data->image, &data->bitt, &data->len, &data->endian);
-	data->narr = t;
-	data->zoom = 3;
+	init_mlx(data);
+	data->height = 3;
 	data->x1 = 0;
 	data->y1 = 0;
 	data->dx = 0;
@@ -82,7 +113,6 @@ int	main(int argc, char **argv)
 	{
 		ft_printf("Hatali harita!\n");
 		close_window(&data);
-		return (1);
 	}
 	draw_map(data.map, &data);
 	mlx_hook(data.win, 2, 1L << 0, key_hook_esc, &data);

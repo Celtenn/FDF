@@ -17,9 +17,13 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
+	@make -C ./minilibx-linux
+	@echo "MINILIBX: DONE"
 	$(CC) $(OBJ) $(INCLUDES) $(LIBS) -o $(NAME)
+	@echo "FDF: DONE"
 
 clean:
+	make clean -C ./minilibx-linux
 	rm -f $(OBJ)
 
 fclean: clean

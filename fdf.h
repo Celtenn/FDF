@@ -39,7 +39,7 @@ typedef struct s_data
 	int				sy;
 }	t_data;
 
-typedef struct o_data
+typedef struct s_temp
 {
 	char			*line;
 	char			**temp;

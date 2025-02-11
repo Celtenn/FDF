@@ -34,10 +34,10 @@ void	iso_projection(int *x, int *y, int z, t_data *data)
 	int		prev_y;
 
 	scale = calculate_scale(data);
-	prev_x = *x * data->height;
-	prev_y = *y * data->height;
+	prev_x = (*x - data->cols / 2) * data->height;
+	prev_y = (*y - data->rows / 2) * data->height;
 	*x = ((prev_x - prev_y) * cos(0.5236) * scale) + 750;
-	*y = ((prev_x + prev_y) * sin(0.5236) * scale) + 200 - (z * scale);
+	*y = ((prev_x + prev_y) * sin(0.5236) * scale) + 450 - (z * scale);
 }
 
 void	draw_horizontal_lines(int y, t_data *data, int **map)

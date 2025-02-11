@@ -47,6 +47,11 @@ int	count_rows(char *filename)
 
 	rows = 0;
 	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+	{
+		ft_printf("Error opening file\n");
+		exit(0);
+	}
 	line = get_next_line(fd);
 	while (line)
 	{
@@ -85,8 +90,6 @@ void	init_data(t_data *data)
 	data->narr = NULL;
 	data->map = NULL;
 	data->color = NULL;
-	data->len = (1500 * 32) / 8;
-	data->bitt = 32;
 	init_mlx(data);
 	data->height = 3;
 	data->x1 = 0;

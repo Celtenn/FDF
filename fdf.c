@@ -91,7 +91,7 @@ void	init_data(t_data *data)
 	data->map = NULL;
 	data->color = NULL;
 	init_mlx(data);
-	data->height = 3;
+	data->height = 4;
 	data->x1 = 0;
 	data->y1 = 0;
 	data->dx = 0;

@@ -1,3 +1,115 @@
+🧭 FdF — 42 Projesi
+📖 Özet
+
+FdF (Fil de Fer), 42 okulu müfredatında yer alan bir grafik projesidir.
+Amaç, MiniLibX kütüphanesini kullanarak 3B noktaların 2B izometrik projeksiyonunu çizen bir “tel kafes (wireframe)” görüntüleyici geliştirmektir.
+
+Program, yükseklik haritası içeren bir .fdf dosyasını okuyarak, her sayıyı bir yükseklik değeri (Z ekseni) olarak yorumlar ve noktaları çizgilerle birleştirip 3B bir şekli 2B ekranda gösterir.
+
+🎯 Amaçlar
+
+3B verilerin 2B ekranda gösterilmesini öğrenmek
+
+Matris dönüşümleri, trigonometri ve koordinat sistemleri ile çalışmak
+
+MiniLibX kullanarak grafik çizimi ve etkinlik (event) yönetimi yapmak
+
+Dosya okuma, bellek yönetimi ve yapıların (struct) etkin kullanımı
+
+🧠 Nasıl Çalışır
+
+Program bir .fdf dosyasını okur.
+
+Her satır X ve Y koordinatlarını,
+
+Her sayı Z yüksekliğini temsil eder.
+
+Noktalar arasına çizgiler çekilerek tel kafes oluşturulur.
+
+Noktalar izometrik dönüşümle 2B ekrana yansıtılır.
+
+Kullanıcı tuşlarla yakınlaştırma, döndürme ve kaydırma işlemlerini yapabilir.
+
+🗂️ Proje Yapısı
+fdf/
+├── Makefile
+├── includes/
+│   └── fdf.h
+├── src/
+│   ├── main.c
+│   ├── parser.c
+│   ├── draw.c
+│   ├── projection.c
+│   ├── utils.c
+│   └── hooks.c
+├── maps/
+│   ├── 42.fdf
+│   └── mars.fdf
+└── README.md
+
+⚙️ Derleme (Build)
+make
+
+
+Bu komut programı derleyip fdf isimli çalıştırılabilir dosyayı oluşturur.
+
+▶️ Kullanım
+./fdf <harita_dosyası.fdf>
+
+
+Örnek:
+
+./fdf maps/42.fdf
+
+🎮 Klavye Kontrolleri
+Tuş	İşlev
+⬆️ / ⬇️ / ⬅️ / ➡️	Haritayı hareket ettir
++ / -	Yakınlaştır / Uzaklaştır
+W / S	X ekseni etrafında döndür
+A / D	Y ekseni etrafında döndür
+Q / E	Z ekseni etrafında döndür
+R	Görünümü sıfırla
+ESC	Programdan çık
+🧰 Bağımlılıklar
+
+MiniLibX kütüphanesi
+
+macOS veya Linux
+
+gcc, make, math.h, mlx.h
+
+Linux için kurulması gereken paketler:
+
+sudo apt install libxext-dev libx11-dev libbsd-dev
+
+📸 Örnek Çıktı
+
+(İsteğe bağlı olarak buraya bir ekran görüntüsü koyabilirsin)
+
+maps/42.fdf → 42 logosunun 3B tel kafes görünümü
+
+💡 Bonus Fikirler
+
+Yüksekliğe göre renk geçişi (gradient) ekleme
+
+Mouse ile döndürme / yakınlaştırma
+
+Paralel projeksiyon modunu ekleme
+
+Klavye ile renk değişimi
+
+Bresenham algoritması ile pürüzsüz çizgi
+
+🗒️ Notlar
+
+FdF projesi, grafik programlamanın temellerini anlamak için mükemmel bir başlangıçtır.
+Matematik, algoritma ve görselleştirme konularında sağlam bir temel kazandırır.
+
+👨‍💻 Yazar
+
+Enes
+42 Öğrencisi — FdF Projesi
+
 Minilibx Kütüphanesi 2D Oyun Yapımı
 
 MinilibX, C programlama dili için bir grafik kütüphanesidir. MinilibX, X Window System (X11) üzerinde çalışır ve X11 veri yapılarını kullanarak grafik işlemleri yapar.

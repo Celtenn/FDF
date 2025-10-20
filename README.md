@@ -1,114 +1,57 @@
-🧭 FdF — 42 Projesi
-📖 Özet
+# 🧩 FdF — 3B Tel Kafes Görselleştirici
 
-FdF (Fil de Fer), 42 okulu müfredatında yer alan bir grafik projesidir.
-Amaç, MiniLibX kütüphanesini kullanarak 3B noktaların 2B izometrik projeksiyonunu çizen bir “tel kafes (wireframe)” görüntüleyici geliştirmektir.
+<p align="center">
+  <img src="https://img.shields.io/badge/Dil-C-blue.svg" />
+  <img src="https://img.shields.io/badge/Okul-42-green.svg" />
+  <img src="https://img.shields.io/badge/Proje-FdF-lightgrey.svg" />
+  <img src="https://img.shields.io/badge/Durum-Tamamlandı-success.svg" />
+</p>
 
-Program, yükseklik haritası içeren bir .fdf dosyasını okuyarak, her sayıyı bir yükseklik değeri (Z ekseni) olarak yorumlar ve noktaları çizgilerle birleştirip 3B bir şekli 2B ekranda gösterir.
+<p align="center">
+  <img src="https://github.com/<kullaniciadi>/fdf/assets/preview.gif" width="600" alt="FdF Önizleme">
+</p>
 
-🎯 Amaçlar
+---
 
-3B verilerin 2B ekranda gösterilmesini öğrenmek
+## 📘 Proje Özeti
 
-Matris dönüşümleri, trigonometri ve koordinat sistemleri ile çalışmak
+**FdF (Fil de Fer)**, 42 müfredatındaki grafik tabanlı bir C projesidir.  
+Amaç, bir yükseklik haritasını 3B uzayda temsil edip **izometrik projeksiyon** kullanarak 2B ekranda tel kafes şeklinde görüntülemektir.
 
-MiniLibX kullanarak grafik çizimi ve etkinlik (event) yönetimi yapmak
+Bu proje sayesinde:
+- 3B → 2B matematiksel dönüşümleri
+- MiniLibX grafik kütüphanesinin kullanımını
+- Klavye olaylarını (event handling)
+- Vektör matematiği ve dönüşüm matrislerini  
+öğrenmek hedeflenir.
 
-Dosya okuma, bellek yönetimi ve yapıların (struct) etkin kullanımı
+---
 
-🧠 Nasıl Çalışır
+## 🧠 Temel Kavramlar
 
-Program bir .fdf dosyasını okur.
+| Konu | Açıklama |
+|-------|-----------|
+| **İzometrik Projeksiyon** | 3B noktaları 2B düzleme eşit açılarla yansıtır. |
+| **Matris Dönüşümleri** | Döndürme, ölçekleme ve yer değiştirme işlemleri için kullanılır. |
+| **Bresenham Algoritması** | İki nokta arasında boşluksuz çizgi çizimi sağlar. |
+| **MiniLibX** | Basit grafik işlemleri için kullanılan 42’ye özel kütüphane. |
 
-Her satır X ve Y koordinatlarını,
+---
 
-Her sayı Z yüksekliğini temsil eder.
+## ⚙️ Kurulum ve Kullanım
 
-Noktalar arasına çizgiler çekilerek tel kafes oluşturulur.
+### Gereksinimler
+- macOS veya Linux
+- `gcc` derleyicisi
+- MiniLibX kütüphanesi (42 ile birlikte gelir)
 
-Noktalar izometrik dönüşümle 2B ekrana yansıtılır.
+### Derleme
 
-Kullanıcı tuşlarla yakınlaştırma, döndürme ve kaydırma işlemlerini yapabilir.
-
-🗂️ Proje Yapısı
-fdf/
-├── Makefile
-├── includes/
-│   └── fdf.h
-├── src/
-│   ├── main.c
-│   ├── parser.c
-│   ├── draw.c
-│   ├── projection.c
-│   ├── utils.c
-│   └── hooks.c
-├── maps/
-│   ├── 42.fdf
-│   └── mars.fdf
-└── README.md
-
-⚙️ Derleme (Build)
+```bash
+git clone https://github.com/<kullaniciadi>/fdf.git
+cd fdf
 make
 
-
-Bu komut programı derleyip fdf isimli çalıştırılabilir dosyayı oluşturur.
-
-▶️ Kullanım
-./fdf <harita_dosyası.fdf>
-
-
-Örnek:
-
-./fdf maps/42.fdf
-
-🎮 Klavye Kontrolleri
-Tuş	İşlev
-⬆️ / ⬇️ / ⬅️ / ➡️	Haritayı hareket ettir
-+ / -	Yakınlaştır / Uzaklaştır
-W / S	X ekseni etrafında döndür
-A / D	Y ekseni etrafında döndür
-Q / E	Z ekseni etrafında döndür
-R	Görünümü sıfırla
-ESC	Programdan çık
-🧰 Bağımlılıklar
-
-MiniLibX kütüphanesi
-
-macOS veya Linux
-
-gcc, make, math.h, mlx.h
-
-Linux için kurulması gereken paketler:
-
-sudo apt install libxext-dev libx11-dev libbsd-dev
-
-📸 Örnek Çıktı
-
-(İsteğe bağlı olarak buraya bir ekran görüntüsü koyabilirsin)
-
-maps/42.fdf → 42 logosunun 3B tel kafes görünümü
-
-💡 Bonus Fikirler
-
-Yüksekliğe göre renk geçişi (gradient) ekleme
-
-Mouse ile döndürme / yakınlaştırma
-
-Paralel projeksiyon modunu ekleme
-
-Klavye ile renk değişimi
-
-Bresenham algoritması ile pürüzsüz çizgi
-
-🗒️ Notlar
-
-FdF projesi, grafik programlamanın temellerini anlamak için mükemmel bir başlangıçtır.
-Matematik, algoritma ve görselleştirme konularında sağlam bir temel kazandırır.
-
-👨‍💻 Yazar
-
-Enes
-42 Öğrencisi — FdF Projesi
 
 Minilibx Kütüphanesi 2D Oyun Yapımı
 

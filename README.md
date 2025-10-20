@@ -52,7 +52,6 @@ Matematiksel mantığı görsel biçime çevirebilen bir grafik motoru oluşturm
 
 ### 📦 Kurulum
 
-```bash
 git clone https://github.com/Celtenn/fdf.git
 cd fdf
 make

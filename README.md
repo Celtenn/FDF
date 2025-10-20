@@ -1,4 +1,12 @@
-<h1 align="center">🧩 FdF — 3B Tel Kafes Görselleştirici</h1>
+<!-- ====================================================== -->
+<!--   🌌  FdF (Fil de Fer) — by Enes Kahraman, 42 Kocaeli   -->
+<!-- ====================================================== -->
+
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=30&pause=1000&color=00C2FF&center=true&vCenter=true&width=600&lines=🧩+FdF+(Fil+de+Fer);3B+Tel+Kafes+Görselleştirici;C+ile+Grafik+Programlama;42+Kocaeli+Projesi" alt="Typing SVG" />
+</p>
+
+---
 
 <p align="center">
   <img src="https://img.shields.io/badge/Dil-C-blue?style=for-the-badge" />
@@ -7,135 +15,83 @@
   <img src="https://img.shields.io/badge/Durum-Tamamlandı-success?style=for-the-badge" />
 </p>
 
+---
+
+## 🌐 Hakkında
+
+**FdF (Fil de Fer)**, 42 okulu müfredatındaki **grafik tabanlı** bir C projesidir.  
+Amaç, verilen bir yükseklik haritasını okuyarak 3B uzayda **tel kafes (wireframe)** biçiminde görselleştirmektir.  
+Matematiksel dönüşümler ve grafik çizimleri ile 2B ekranda 3B bir görünüm oluşturur.
+
+🧭 **Temel hedef:**  
+Matematiksel mantığı görsel biçime çevirebilen bir grafik motoru oluşturmak.
+
 <p align="center">
-  <img src="https://github.com/Celtenn/fdf/assets/preview.gif" width="600" alt="FdF Önizleme">
+  <img src="https://github.com/Celtenn/fdf/assets/example_output.png" width="550" alt="FdF Preview">
 </p>
 
 ---
 
-## 📘 Proje Hakkında
-
-**FdF (Fil de Fer)**, 42 müfredatındaki grafik tabanlı bir C projesidir.  
-Amaç, bir yükseklik haritasını 3B uzayda temsil edip **izometrik projeksiyon** ile 2B ekranda tel kafes şeklinde görüntülemektir.  
-Sonuç olarak, bir “tel kafes” (wireframe) modeli oluşturulur.
-
-### 🎯 Öğrenilen Kazanımlar
-- 3B → 2B **matematiksel projeksiyon** teknikleri  
-- **MiniLibX** kullanarak pencere, olay ve görüntü yönetimi  
-- **Bresenham algoritması** ile verimli çizgi çizimi  
-- **Matris dönüşümleri** ve **vektör matematiği**
-
----
-
-## 🧠 Temel Kavramlar
+## 🧠 Öğrenilen Temeller
 
 | Konu | Açıklama |
 |------|-----------|
-| 🧮 **İzometrik Projeksiyon** | 3B koordinatları 2B düzleme sabit açılarla yansıtır. |
-| 🔄 **Matris Dönüşümü** | Döndürme, ölçekleme ve konum değiştirme işlemlerini yönetir. |
-| ✏️ **Bresenham Algoritması** | İki nokta arasında pikselleri hesaplayarak kesintisiz çizgi oluşturur. |
-| 💡 **MiniLibX** | 42’nin grafik projeleri için geliştirdiği küçük ama güçlü bir C kütüphanesidir. |
+| 🧮 **İzometrik Projeksiyon** | 3B noktaların 2B düzleme aktarılması. |
+| ✏️ **Bresenham Algoritması** | Piksel tabanlı çizgi çizim algoritması. |
+| 🔄 **Matris Dönüşümleri** | Döndürme, ölçekleme, çevirme işlemleri. |
+| 💡 **MiniLibX** | 42’nin özel C grafik kütüphanesi. |
 
 ---
 
-## ⚙️ Kurulum ve Kullanım
+## ⚙️ Kurulum ve Çalıştırma
 
-### 📦 Gereksinimler
+### 🔧 Gereksinimler
 - macOS veya Linux  
 - `gcc` veya `clang` derleyicisi  
-- MiniLibX kütüphanesi (42 projelerinde varsayılan olarak gelir)
+- MiniLibX kütüphanesi (42 projeleri ile birlikte gelir)
 
-### 🧰 Derleme
+### 📦 Kurulum
 
 ```bash
 git clone https://github.com/Celtenn/fdf.git
 cd fdf
 make
-▶️ Çalıştırma
-bash
-Kodu kopyala
 ./fdf maps/42.fdf
-Program, maps/ klasöründeki .fdf uzantılı haritaları okuyarak 3B görselleştirme yapar.
-
-🎮 Klavye Kontrolleri
+⌨️ Klavye Kontrolleri
+<p align="center">
 Tuş	İşlev
-↑ ↓ ← →	Görünümü hareket ettir
-+ / -	Yakınlaştır / Uzaklaştır
-Q / E	Z ekseni etrafında döndür
-R	Görünümü sıfırla
-ESC	Programdan çık
-
-Kullanıcı etkileşimi MiniLibX event hook sistemi ile yönetilir.
-
-🧩 Proje Dizini
-bash
-Kodu kopyala
+⬆️ / ⬇️ / ⬅️ / ➡️	Görünümü hareket ettir
+➕ / ➖	Yakınlaştır / Uzaklaştır
+🌀 Q / E	Z ekseni etrafında döndür
+♻️ R	Görünümü sıfırla
+🚪 ESC	Programdan çık
+</p>
 fdf/
 ├── includes/
-│   └── fdf.h              # Tüm yapı tanımları, prototipler
+│   └── fdf.h
 ├── srcs/
-│   ├── main.c             # Programın giriş noktası
-│   ├── parse_map.c        # Harita okuma ve yükseklik verisi ayrıştırma
-│   ├── draw.c             # Bresenham algoritmasıyla çizim işlemleri
-│   ├── projection.c       # 3B -> 2B izometrik dönüşüm
-│   ├── hooks.c            # Klavye olaylarının yönetimi
-│   └── utils.c            # Yardımcı fonksiyonlar
+│   ├── main.c
+│   ├── parse_map.c
+│   ├── draw.c
+│   ├── projection.c
+│   ├── hooks.c
+│   └── utils.c
 ├── maps/
-│   ├── 42.fdf             # Örnek yükseklik haritası
+│   ├── 42.fdf
 │   ├── mars.fdf
 │   └── pyramid.fdf
-├── Makefile               # Derleme yönetimi
+├── Makefile
 └── README.md
 🧮 Matematiksel Arka Plan
-🔹 İzometrik Projeksiyon Formülü
-𝑥
-′
-=
-(
-𝑥
-−
-𝑦
-)
-×
-cos
-⁡
-(
-30
-°
-)
-x 
-′
- =(x−y)×cos(30°)
-𝑦
-′
-=
-(
-𝑥
-+
-𝑦
-)
-×
-sin
-⁡
-(
-30
-°
-)
-−
-𝑧
-y 
-′
- =(x+y)×sin(30°)−z
-Bu formül, 3B uzaydaki noktaları 2B düzleme aktarırken derinlik ve yükseklik hissi sağlar.
+🎲 İzometrik Projeksiyon
 
-🔹 Bresenham Çizgi Algoritması
-Bresenham algoritması, iki nokta arasındaki en yakın pikselleri seçerek kesintisiz çizgi çizer.
-Bu yöntem, float kullanmadan yalnızca integer aritmetik işlemlerle çalıştığı için oldukça hızlıdır.
+x′=(x−y)×cos(30°)
+y′=(x+y)×sin(30°)−z
 
-Örnek pseudo-kod:
+Bu dönüşüm, 3B uzayda bulunan noktaları 2B ekranda derinlik hissi vererek gösterir.
 
-c
-Kodu kopyala
+📈 Bresenham Algoritması
+
 void draw_line(t_point a, t_point b)
 {
     int dx = abs(b.x - a.x);
@@ -152,38 +108,16 @@ void draw_line(t_point a, t_point b)
         if (e2 < dx) { err += dx; a.y += sy; }
     }
 }
-🖼️ Görsel Örnek
-<p align="center"> <img src="https://github.com/Celtenn/fdf/assets/example_output.png" width="550" alt="FdF Çıktı Örneği"> </p>
+
 🧰 Makefile Komutları
 Komut	Açıklama
-make	Programı derler
-make clean	Ara dosyaları (.o) siler
-make fclean	Tüm derlenmiş dosyaları siler
-make re	Baştan derleme yapar
-
-Makefile, otomatik bağımlılık yönetimi ve hata toleransı ile optimize edilmiştir.
+make ->	Programı derler
+make clean	-> Ara dosyaları temizler
+make fclean	-> Tüm derleme çıktısını siler
+make re	-> Baştan derleme yapar
 
 🧑‍💻 Yazar
+
 Enes Kahraman
 📍 42 Kocaeli
 🔗 GitHub: Celtenn
-
-🏁 Bonus Özellikler
-✅ Klavye ile dinamik döndürme
-
-✅ Yüksekliğe göre renk geçişleri
-
-✅ Dosya ve bellek hatası kontrolü
-
-✅ Otomatik merkezleme ve ölçek ayarlama
-
-✅ Hata mesajı ve argüman denetimi
-
-✅ Esnek yapılandırma ve yeniden çizim desteği
-
-🧾 Lisans
-Bu proje, 42 Kocaeli kapsamında eğitim amaçlı olarak geliştirilmiştir.
-Tüm hakları Enes Kahraman’a aittir.
-Kullanım yalnızca öğrenim ve paylaşım amaçlıdır.
-
-<p align="center">⭐ Bu proje faydalı olduysa bir yıldız bırakmayı unutma!</p> ```

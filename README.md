@@ -30,7 +30,6 @@ Matematiksel mantığı görsel biçime çevirebilen bir grafik motoru oluşturm
   <img src="https://github.com/Celtenn/fdf/assets/example_output.png" width="550" alt="FdF Preview">
 </p>
 
----
 ```bash
 git clone https://github.com/Celtenn/fdf.git
 cd fdf

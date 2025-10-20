@@ -83,12 +83,12 @@ fdf/
 ├── includes/
 │   └── fdf.h
 ├── srcs/
-│   ├── main.c
-│   ├── parse_map.c
-│   ├── draw.c
-│   ├── projection.c
-│   ├── hooks.c
-│   └── utils.c
+│   ├── fdf.c
+│   ├── readfdf.c
+│   ├── drawfdf.c
+│   ├── drawlinefdf.c
+│   ├── hook.c
+│   └── bonus.c
 ├── maps/
 │   ├── 42.fdf
 │   ├── mars.fdf

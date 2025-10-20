@@ -69,9 +69,9 @@ make
 | Tuş | İşlev |
 |:----|:------|
 | ⬆️ / ⬇️ / ⬅️ / ➡️ | Görünümü hareket ettir |
-| ➕ / ➖ | Yakınlaştır / Uzaklaştır |
-| 🌀 Q / E | Z ekseni etrafında döndür |
-| ♻️ R | Görünümü sıfırla |
+| 🌀 Q / E  | Yakınlaştır / Uzaklaştır |
+| 🌀 W / S | Ölçek değerini değiştirir |
+| ♻️ R | Görünümü değiştir |
 | 🚪 ESC | Programdan çık |
 
 ---

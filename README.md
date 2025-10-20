@@ -31,6 +31,11 @@ Matematiksel mantığı görsel biçime çevirebilen bir grafik motoru oluşturm
 </p>
 
 ---
+```bash
+git clone https://github.com/Celtenn/fdf.git
+cd fdf
+make
+./fdf maps/42.fdf
 
 ## 🧠 Öğrenilen Temeller
 

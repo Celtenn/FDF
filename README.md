@@ -25,7 +25,7 @@ Matematiksel dönüşümler ve grafik çizimleri ile 2B ekranda 3B bir görünü
 Matematiksel mantığı görsel biçime çevirebilen bir grafik motoru oluşturmak.
 
 <p align="center">
-  <img src="https://github.com/Celtenn/fdf/assets/example_output.png" width="550" alt="FdF Preview">
+  <img src="https://github.com/Celtenn/fdf/assets/ehehe.png" width="550" alt="FdF Preview">
 </p>
 
 ---

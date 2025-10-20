@@ -30,10 +30,33 @@ Matematiksel mantığı görsel biçime çevirebilen bir grafik motoru oluşturm
   <img src="https://github.com/Celtenn/fdf/assets/example_output.png" width="550" alt="FdF Preview">
 </p>
 
+---
+
+## 🧠 Öğrenilen Temeller
+
+| Konu | Açıklama |
+|------|-----------|
+| 🧮 **İzometrik Projeksiyon** | 3B noktaların 2B düzleme aktarılması. |
+| ✏️ **Bresenham Algoritması** | Piksel tabanlı çizgi çizim algoritması. |
+| 🔄 **Matris Dönüşümleri** | Döndürme, ölçekleme, çevirme işlemleri. |
+| 💡 **MiniLibX** | 42’nin özel C grafik kütüphanesi. |
+
+---
+
+## ⚙️ Kurulum ve Çalıştırma
+
+### 🔧 Gereksinimler
+- macOS veya Linux  
+- `gcc` veya `clang` derleyicisi  
+- MiniLibX kütüphanesi (42 projeleri ile birlikte gelir)
+
+### 📦 Kurulum
+
 ```bash
 git clone https://github.com/Celtenn/fdf.git
 cd fdf
 make
+
 ./fdf maps/42.fdf
 
 ## 🧠 Öğrenilen Temeller
